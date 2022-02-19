@@ -1,16 +1,45 @@
 'use strict';
 import { updateBoids, setTickerCallback } from './script.js';
 
+class Vector {
+	constructor (x, y) {
+		this.x = x;
+		this.y = y;
+	}
+
+	static get zero () {
+		return new Vector(0, 0);
+	}
+
+	add (other) {
+		return new Vector(this.x + other.x, this.y + other.y);
+	}
+
+	sub (other) {
+		return new Vector(this.x - other.x, this.y - other.y);
+	}
+
+	mul (scalar) {
+		return new Vector(this.x * scalar, this.y * scalar);
+	}
+
+	get magnitude () {
+		return Math.sqrt(this.x ** 2 + this.y ** 2);
+	}
+
+	normalized () {
+		const mag = this.magnitude;
+		return new Vector(this.x / mag, this.y / mag);
+	}
+}
+
 class Scene {
 	constructor (numBoids, screenWidth, screenHeight) {
 		this.boids = [];
-		this.width = screenWidth;
-		this.height = screenHeight;
 
 		for (let i = 0; i < numBoids; i++) {
-			const x = Math.random() * screenWidth;
-			const y = Math.random() * screenHeight;
-			const b = new Boid(x, y, 0, 0);
+			const pos = new Vector(Math.random() * screenWidth, Math.random() * screenHeight);
+			const b = new Boid(pos, Vector.zero);
 			this.registerBoid(b);
 		}
 
@@ -24,7 +53,7 @@ class Scene {
 
 	nearbyBoids (boid) {
 		const nearby = [];
-		const viewRadius = 0.2;
+		const viewRadius = 0.15;
 		for (const b of this.boids) {
 			if (b === boid) continue;
 
@@ -37,24 +66,8 @@ class Scene {
 	}
 
 	tick (delta) {
-		const nearby = this.nearbyBoids(this.boids[45]);
-
 		for (const b of this.boids) {
-			b.x += b.dx * delta;
-			b.y += b.dy * delta;
-
-			const mag = 0.00025;
-			const dx = Math.random() * 2 * mag - mag;
-			const dy = Math.random() * 2 * mag - mag;
-
-			b.dx += dx;
-			b.dy += dy;
-
-			if (nearby.includes(b)) {
-				b.tint = 0xFF00;
-			} else if (b !== this.boids[45]) {
-				b.tint = 0xFFFFFF;
-			}
+			b.tick(delta);
 		}
 
 		updateBoids(this.getJSON().boids);
@@ -64,10 +77,10 @@ class Scene {
 		const boidsArr = [];
 		for (const b of this.boids) {
 			boidsArr.push({
-				x: b.x,
-				y: b.y,
-				dx: b.dx,
-				dy: b.dy,
+				x: b.pos.x,
+				y: b.pos.y,
+				dx: b.velocity.x,
+				dy: b.velocity.y,
 				tint: b.tint
 			});
 		}
@@ -76,20 +89,48 @@ class Scene {
 }
 
 class Boid {
-	constructor (x, y, dx, dy) {
-		this.x = x;
-		this.y = y;
-		this.dx = dx;
-		this.dy = dy;
+	constructor (pos, velocity) {
+		this.pos = pos;
+		this.velocity = velocity;
 		this.tint = 0xFFFFFF;
 	}
 
 	get rotation () {
-		return Math.atan2(this.dx, this.dy);
+		return Math.atan2(this.velocity.x, this.velocity.y);
 	}
 
 	distance (otherBoid) {
-		return Math.sqrt((this.x - otherBoid.x) ** 2 + (this.y - otherBoid.y) ** 2);
+		return this.pos.sub(otherBoid.pos).magnitude;
+	}
+
+	tick (delta) {
+		this.pos = this.pos.add(this.velocity.mul(delta));
+
+		const accelerationFactor = 0.0001;
+
+		const cohesionFactor = 1.0;
+		const separationFactor = 1.0;
+		const alignmentFactor = 1.0;
+
+		const alignmentVec = Vector.zero;
+		const separationVec = Vector.zero;
+
+		let centerOfGroup = Vector.zero;
+
+		const nearby = scene.nearbyBoids(this);
+		for (const b of nearby) {
+			// cohesion:
+			centerOfGroup = centerOfGroup.add(b.pos);
+
+			// separation:
+		}
+		centerOfGroup = centerOfGroup.mul(1 / nearby.length);
+
+		const cohesionVec = centerOfGroup.sub(this.pos).normalized();
+
+		const acceleration = cohesionVec.add(alignmentVec).add(separationVec).normalized().mul(accelerationFactor);
+
+		this.velocity = this.velocity.add(acceleration);
 	}
 }
 
