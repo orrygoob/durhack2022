@@ -1,8 +1,8 @@
 const express = require('express');
-var expressWs = require('express-ws');
+let expressWs = require('express-ws');
 const { json } = require('express/lib/response');
 
-var expressWs = expressWs(express());
+expressWs = expressWs(express());
 const app = expressWs.app;
 
 app.use(express.static('client'));
