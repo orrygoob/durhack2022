@@ -43,19 +43,26 @@ function updateBoids (boidsData) {
 		registerBoidSprites(boidsData);
 	}
 
+	const size = getSize();
+
 	boidsData.forEach((boid, index) => {
-		boidSprites[index].x = boid.x ?? 0;
-		boidSprites[index].y = boid.y ?? 0;
+		boidSprites[index].x = (boid.x ?? 0) * size;
+		boidSprites[index].y = (boid.y ?? 0) * size;
 		boidSprites[index].angle = Math.atan2(boid.dy ?? 0, boid.dx ?? 0) * (180 / Math.PI) + 90;
 		boidSprites[index].tint = boid.tint ?? 0xffffff;
 	});
+}
+
+function getSize () {
+	return Math.min(window.innerWidth, window.innerHeight);
 }
 
 window.addEventListener('resize', resize);
 
 // https://jsfiddle.net/bigtimebuddy/oaLwp0p9/
 function resize () {
-	app.renderer.resize(window.innerWidth, window.innerHeight);
+	const size = getSize();
+	app.renderer.resize(size, size);
 }
 
 resize();
@@ -72,7 +79,7 @@ app.ticker.add((delta) => {
 	}
 });
 
-// updateBoids([{ x: 30, y: 30, dx: -1, dy: -0.5, tint: 0xff0000 }, { x: 100, y: 100, dx: 0, dy: 0, tint: 0x00ff00 }]);
+// updateBoids([{ x: 30 / 100, y: 30 / 100, dx: -1, dy: -0.5, tint: 0xff0000 }, { x: 100 / 100, y: 100 / 100, dx: 0, dy: 0, tint: 0x00ff00 }]);
 
 export {
 	updateBoids,
