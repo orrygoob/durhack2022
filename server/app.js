@@ -3,11 +3,11 @@ var expressWs = require('express-ws');
 const { json } = require('express/lib/response');
 
 var expressWs = expressWs(express());
-var app = expressWs.app;
+const app = expressWs.app;
 
 app.use(express.static('client'));
 
-var myWebsocket = expressWs.getWss('/');
+const myWebsocket = expressWs.getWss('/');
 
 app.ws('/', function(ws, req) {
     ws.onmessage = function(msg) {
@@ -22,6 +22,4 @@ function tickCallback(json) {
         client.send(json);
     });
 }
-
-
 module.exports = app;
