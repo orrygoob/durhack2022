@@ -64,6 +64,13 @@ function onLogin () {
 	document.getElementById('logout-button').classList.remove('hidden');
 	app.view.id = 'pixi-app';
 	document.getElementById('flex-div').appendChild(app.view);
+
+	if ('WebSocketStream' in window) {
+		const socket = new WebSocket('ws://127.0.0.1');
+		socket.onmessage((message) => {
+			print(message);
+		});
+	}
 }
 
 function logout () {
