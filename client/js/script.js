@@ -10,7 +10,7 @@ const app = new PIXI.Application({
 	resolution: devicePixelRatio,
 	backgroundColor: 0x1099bb
 });
-// document.body.appendChild(app.view);
+document.body.appendChild(app.view);
 
 const boidTexture = PIXI.Texture.from('../assets/textures/triangle.png');
 

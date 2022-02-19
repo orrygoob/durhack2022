@@ -18,3 +18,23 @@ canvas {
     width: min(100vh, 100vw);
     height: min(100vh, 100vw);
 }
+
+#login {
+    width: 100vw;
+    height: 100vh;
+    align-items: center;
+
+    display: flex;
+    justify-content: center;
+    background-color: black;
+}
+
+#login-card {
+    background-color: white;
+    border-radius: 0.5em;
+    padding: 1em;
+}
+
+#login input {
+    margin-bottom: 0.5em;
+}
