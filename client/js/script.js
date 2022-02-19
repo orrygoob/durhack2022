@@ -32,6 +32,7 @@ for (var i = 0; i < 25; i++) {
 }
 
 var boidSprites = [];
+boids.forEach(() => {});
 
 // Move container to the center
 container.x = app.screen.width / 2;
