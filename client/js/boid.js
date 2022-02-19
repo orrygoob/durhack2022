@@ -2,24 +2,23 @@
 import { updateBoids, setTickerCallback } from './script.js';
 
 class Scene {
-	constructor (numBoids, screenWidth, screenHeight, container) {
-		/* testing: */
-		this.container = container;
-
+	constructor (numBoids, screenWidth, screenHeight) {
 		this.boids = [];
 		this.width = screenWidth;
 		this.height = screenHeight;
 
-		const sz = Math.sqrt(numBoids);
+		const boidVelocity = 1.0;
+
 		for (let i = 0; i < numBoids; i++) {
-			const x = (i % sz) * 30;
-			const y = Math.floor(i / sz) * 30;
-			const dx = Math.random() * 2 - 1;
-			const dy = Math.random() * 2 - 1;
+			const x = Math.random() * screenWidth;
+			const y = Math.random() * screenHeight;
+			const dx = Math.random() * 2 * boidVelocity - boidVelocity;
+			const dy = Math.random() * 2 * boidVelocity - boidVelocity;
 			const b = new Boid(x, y, dx, dy);
 			this.registerBoid(b);
 		}
 
+		// DEBUG
 		this.boids[45].tint = 0xFF0000;
 	}
 
@@ -29,7 +28,7 @@ class Scene {
 
 	nearbyBoids (boid) {
 		const nearby = [];
-		const viewRadius = 100.0;
+		const viewRadius = 10.0;
 		for (const b of this.boids) {
 			if (b === boid) continue;
 
@@ -98,7 +97,7 @@ class Boid {
 	}
 }
 
-const scene = new Scene(100, 500, 500);
+const scene = new Scene(100, 100, 100);
 setTickerCallback((delta) => {
 	scene.tick(delta);
 });
