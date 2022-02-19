@@ -1,6 +1,7 @@
 ## LOCAL FILE GITIGNORE
 
 *.DS_Store
+package-lock.json
 
 ## NODE GITIGNORE
 
