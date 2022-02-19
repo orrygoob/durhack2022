@@ -1,7 +1,6 @@
 {
   "name": "durhack2022",
   "version": "1.0.0",
-  "description": "",
   "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -15,5 +14,14 @@
   "bugs": {
     "url": "https://github.com/orrygoob/durhack2022/issues"
   },
-  "homepage": "https://github.com/orrygoob/durhack2022#readme"
+  "homepage": "https://github.com/orrygoob/durhack2022#readme",
+  "description": "",
+  "dependencies": {
+    "express": "^4.17.3",
+    "pixi.js": "^6.2.2"
+  },
+  "devDependencies": {
+    "eslint": "^8.9.0",
+    "nodemon": "^2.0.15"
+  }
 }
