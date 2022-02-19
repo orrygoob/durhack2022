@@ -1,5 +1,5 @@
 'use strict';
-import { updateBoids, setTickerCallback } from './script.js';
+import { updateBoids, setTickerCallback, setBoidSize } from './script.js';
 
 class Vector {
 	constructor (x, y) {
@@ -38,10 +38,16 @@ class Scene {
 	constructor (numBoids, screenWidth, screenHeight) {
 		this.boids = [];
 		this.players = [];
+		this.initialVelocity = 0.0001;
 
 		for (let i = 0; i < numBoids; i++) {
-			const pos = new Vector(Math.random() * screenWidth, Math.random() * screenHeight);
-			const b = new Boid(pos, Vector.zero);
+			let pos = new Vector(Math.random() * screenWidth, Math.random() * screenHeight);
+
+			// DEBUG
+			pos = pos.mul(0.5).add(new Vector(0.25, 0.25));
+
+			const vel = new Vector(Math.random() * 2 - 1, Math.random() * 2 - 1).normalized().mul(this.initialVelocity);
+			const b = new Boid(pos, vel);
 			this.registerBoid(b);
 		}
 
@@ -136,18 +142,16 @@ class Boid {
 	tick (delta) {
 		this.pos = this.pos.add(this.velocity.mul(delta));
 
-		const accelerationFactor = 0.0001;
-
 		const cohesionFactor = 1.0;
 		const separationFactor = 1.0;
-		const alignmentFactor = 1.0;
+		const alignmentFactor = 0.1;
 
 		const separationDistance = 0.05;
 
 		let separationVec = Vector.zero;
 
 		let centerOfGroup = Vector.zero;
-		let averageRotation = 0.0;
+		let alignmentVec = Vector.zero;
 
 		const nearby = scene.nearbyBoids(this);
 		if (!nearby.length) return;
@@ -164,7 +168,7 @@ class Boid {
 			}
 
 			// alignment:
-			averageRotation += b.rotation;
+			alignmentVec = alignmentVec.add(b.velocity);
 		}
 		// cohesion:
 		centerOfGroup = centerOfGroup.mul(1 / nearby.length);
@@ -174,15 +178,16 @@ class Boid {
 		separationVec = separationVec.normalized().mul(separationFactor);
 
 		// alignment:
-		averageRotation /= nearby.length;
-		const alignmentVec = new Vector(0, 0);
+		alignmentVec = alignmentVec.normalized().mul(alignmentFactor);
 
 		// calculate acceleration:
-		const acceleration = cohesionVec.add(alignmentVec).add(separationVec).normalized().mul(accelerationFactor);
+		const acceleration = cohesionVec.add(alignmentVec).add(separationVec).normalized().mul(scene.initialVelocity);
 		this.velocity = this.velocity.add(acceleration);
 	}
 }
 
+// DEBUG:
+setBoidSize(8);
 const scene = new Scene(500, 1.0, 1.0);
 setTickerCallback((delta) => {
 	scene.tick(delta);
