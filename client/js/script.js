@@ -10,11 +10,94 @@ const app = new PIXI.Application({
 	resolution: devicePixelRatio,
 	backgroundColor: 0x1099bb
 });
-document.body.appendChild(app.view);
 
 const boidTexture = PIXI.Texture.from('../assets/textures/triangle.png');
 
 let boidSprites = [];
+
+document.addEventListener('DOMContentLoaded', () => {
+	previewTint();
+
+	if (getUsername() !== null && getUsername() !== null) {
+		onLogin();
+	}
+
+	document.getElementById('login-button').addEventListener('click', () => {
+		const username = document.getElementById('login-username').value;
+		const tint = document.getElementById('login-color').value.replace('#', '');
+
+		if (username.length > 0 && isValidHexColor(tint)) {
+			setUsername(username);
+			setUserTint(parseInt(tint, 16));
+
+			onLogin();
+		} else {
+			alert('Invalid username or color!');
+		}
+	});
+
+	document.getElementById('login-color').addEventListener('input', (e) => {
+		previewTint();
+	});
+
+	document.getElementById('logout-button').addEventListener('click', () => {
+		logout();
+	});
+});
+
+function previewTint () {
+	const tint = document.getElementById('login-color').value.replace('#', '');
+
+	if (isValidHexColor(tint)) {
+		document.getElementById('login-color').style.backgroundColor = '#' + tint;
+	}
+}
+
+// Does not expect a # beforehand!
+function isValidHexColor (color) {
+	const colorInt = parseInt(color, 16);
+	return color.length === 6 && !isNaN(colorInt) && colorInt >= 0 && colorInt <= 0xffffff;
+}
+
+function onLogin () {
+	document.getElementById('login').classList.add('hidden');
+	document.getElementById('logout-button').classList.remove('hidden');
+	app.view.id = 'pixi-app';
+	document.getElementById('flex-div').appendChild(app.view);
+}
+
+function logout () {
+	setUsername(null);
+	setUserTint(null);
+
+	document.getElementById('login').classList.remove('hidden');
+	document.getElementById('logout-button').classList.add('hidden');
+	document.getElementById('flex-div').removeChild(document.getElementById('pixi-app'));
+}
+
+function setUsername (username) {
+	if (username === null) {
+		localStorage.removeItem('username');
+	} else {
+		localStorage.setItem('username', username);
+	}
+}
+
+function getUsername (username) {
+	return localStorage.getItem('username');
+}
+
+function setUserTint (tint) {
+	if (tint === null) {
+		localStorage.removeItem('tint');
+	} else {
+		localStorage.setItem('tint', tint);
+	}
+}
+
+function getUserTint (tint) {
+	return localStorage.getItem('tint');
+}
 
 function registerBoidSprites (boidsData) {
 	boidSprites = [];

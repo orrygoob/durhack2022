@@ -1,5 +1,6 @@
 html, body {
-    overflow: hidden
+    overflow: hidden;
+    background-color: black !important;
 }
 
 body {
@@ -7,16 +8,30 @@ body {
     height: 100vh;
     padding: 0;
     margin: 0;
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    background-color: black;
 }
 
 canvas {
     display: block;
     width: min(100vh, 100vw);
     height: min(100vh, 100vw);
+}
+
+/* Display none and same for descendants */
+.hidden * {
+	display: none !important;
+}
+.hidden {
+	display: none !important;
+}
+
+#flex-div {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    width: 100vw;
+    height: 100vh;
+    padding: 0;
+    margin: 0;
 }
 
 #login {
@@ -37,4 +52,8 @@ canvas {
 
 #login input {
     margin-bottom: 0.5em;
+}
+
+#logout-button {
+    position: absolute;
 }
