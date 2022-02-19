@@ -14,6 +14,8 @@ const app = new PIXI.Application({
 const boidTexture = PIXI.Texture.from('../assets/textures/triangle.png');
 
 let boidSprites = [];
+let playerSprites = [];
+let playerID = -1;
 
 document.addEventListener('DOMContentLoaded', () => {
 	previewTint();
@@ -65,12 +67,20 @@ function onLogin () {
 	app.view.id = 'pixi-app';
 	document.getElementById('flex-div').appendChild(app.view);
 
-	if ('WebSocketStream' in window) {
-		const socket = new WebSocket('ws://127.0.0.1');
-		socket.onmessage((message) => {
-			print(message);
-		});
-	}
+	const socket = new WebSocket('ws://127.0.0.1');
+	socket.onopen = () => {
+		socket.send(JSON.stringify({ playerID: -1, x: 0, y: 0, name: getUsername(), tint: getUserTint() }));
+	};
+	socket.onmessage = async (event) => {
+		const jsonData = JSON.parse(event.data);
+		if (jsonData.boids === undefined) {
+			playerID = jsonData.playerID;
+			alert(playerID);
+		} else {
+			updateBoids(jsonData.boids);
+			updatePlayers(jsonData.players);
+		}
+	};
 }
 
 function logout () {
@@ -117,12 +127,25 @@ function registerBoidSprites (boidsData) {
 	boidSprites = [];
 	boidsData.forEach((boid) => {
 		const boidSprite = new PIXI.Sprite(boidTexture);
-		boidSprite.width = 10;
-		boidSprite.height = 10;
+		boidSprite.width = 8;
+		boidSprite.height = 8;
 		boidSprite.anchor.set(0.5, 0.5);
 		boidSprites.push(boidSprite);
 		boidSprite.tint = 0xff0000;
 		app.stage.addChild(boidSprite);
+	});
+}
+
+function registerPlayerSprites (playersData) {
+	playerSprites = [];
+	playersData.forEach((player) => {
+		const playerSprite = new PIXI.Sprite(boidTexture);
+		playerSprite.width = 20;
+		playerSprite.height = 20;
+		playerSprite.anchor.set(0.5, 0.5);
+		playerSprites.push(playerSprite);
+		playerSprite.tint = player.tint;
+		app.stage.addChild(playerSprite);
 	});
 }
 
@@ -146,6 +169,22 @@ function updateBoids (boidsData) {
 		boidSprites[index].y = (boid.y ?? 0) * size;
 		boidSprites[index].angle = Math.atan2(boid.dy ?? 0, boid.dx ?? 0) * (180 / Math.PI) + 90;
 		boidSprites[index].tint = boid.tint ?? 0xffffff;
+	});
+}
+
+function updatePlayers (playersData) {
+	if (playersData.length !== playerSprites.length) {
+		clearStage();
+		registerPlayerSprites(playersData);
+	}
+
+	const size = getSize();
+
+	playersData.forEach((player, index) => {
+		playerSprites[index].x = (player.x ?? 0) * size;
+		playerSprites[index].y = (player.y ?? 0) * size;
+		playerSprites[index].angle = Math.atan2(player.dy ?? 0, player.dx ?? 0) * (180 / Math.PI) + 90;
+		playerSprites[index].tint = player.tint ?? 0xffffff;
 	});
 }
 
