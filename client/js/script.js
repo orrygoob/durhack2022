@@ -22,7 +22,7 @@ function registerBoidSprites (boidsData) {
 		const boidSprite = new PIXI.Sprite(boidTexture);
 		boidSprite.width = 10;
 		boidSprite.height = 10;
-		boidSprite.agnle = 50;
+		boidSprite.anchor.set(0.5, 0.5);
 		boidSprites.push(boidSprite);
 		boidSprite.tint = 0xff0000;
 		app.stage.addChild(boidSprite);
@@ -44,9 +44,10 @@ function updateBoids (boidsData) {
 	}
 
 	boidsData.forEach((boid, index) => {
-		boidSprites[index].x = boid.x;
-		boidSprites[index].y = boid.y;
-		boidSprites[index].angle = Math.atan2(boid.dy, boid.dx);
+		boidSprites[index].x = boid.x ?? 0;
+		boidSprites[index].y = boid.y ?? 0;
+		boidSprites[index].angle = Math.atan2(boid.dy ?? 0, boid.dx ?? 0) * (180 / Math.PI) + 90;
+		boidSprites[index].tint = boid.tint ?? 0xffffff;
 	});
 }
 
@@ -55,27 +56,25 @@ window.addEventListener('resize', resize);
 // https://jsfiddle.net/bigtimebuddy/oaLwp0p9/
 function resize () {
 	app.renderer.resize(window.innerWidth, window.innerHeight);
-	// rect.position.set(app.screen.width, app.screen.height);
 }
 
 resize();
 
-// updateBoids([{ x: 10, y: 20, dx: 4, dy: 2 }, { x: 30, y: 40, dx: 4, dy: -2 }]);
-
 let tickerCallback = null;
 
-function setTickerCallback(callback) {
-    tickerCallback = callback;
+function setTickerCallback (callback) {
+	tickerCallback = callback;
 }
 
 app.ticker.add((delta) => {
-    //console.log (tickerCallback);
-    if (tickerCallback) {
-        tickerCallback(delta);
-    }
+	if (tickerCallback) {
+		tickerCallback(delta);
+	}
 });
+
+// updateBoids([{ x: 30, y: 30, dx: -1, dy: -0.5, tint: 0xff0000 }, { x: 100, y: 100, dx: 0, dy: 0, tint: 0x00ff00 }]);
 
 export {
 	updateBoids,
-    setTickerCallback
+	setTickerCallback
 };
