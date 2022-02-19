@@ -36,6 +36,7 @@ class Vector {
 class Scene {
 	constructor (numBoids, screenWidth, screenHeight) {
 		this.boids = [];
+		this.players = [];
 
 		for (let i = 0; i < numBoids; i++) {
 			const pos = new Vector(Math.random() * screenWidth, Math.random() * screenHeight);
@@ -45,6 +46,40 @@ class Scene {
 
 		// DEBUG
 		this.boids[45].tint = 0xFF0000;
+	}
+
+	// Update player position, name and color. Return the player ID
+	updatePlayer (id, _x, _y, _name, _tint) {
+		let playerID = -1;
+		// Client doesn't know what player it is
+		if (id == -1) 
+		{
+			// Create player
+			this.players.push({ id: this.players.length, x: _x, y: _y, name: _name, tint: _tint });
+
+			// Tell player who they are
+			playerID = this.players.length;
+		}
+		// Player is wrong about who they are (Array index error)
+		else if (id >= this.players.length)
+		{
+			// Create new player
+			this.players.push({ id: this.players.length, x: _x, y: _y, name: _name, tint: _tint });
+
+			// Tell player who they are
+			playerID = this.players.length;
+		}
+		else
+		{
+			this.players[id].x = _x;
+			this.players[id].y = _y;
+			this.players[id].tint = _tint;
+			this.players[id].tint = _name;
+
+			playerID = id;
+		}
+
+		return playerID;
 	}
 
 	registerBoid (boid) {
