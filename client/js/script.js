@@ -22,8 +22,7 @@ function registerBoidSprites (boidsData) {
 		const boidSprite = new PIXI.Sprite(boidTexture);
 		boidSprite.width = 10;
 		boidSprite.height = 10;
-		boidSprite.x = boid.x;
-		boidSprite.y = boid.y;
+		boidSprite.agnle = 50;
 		boidSprites.push(boidSprite);
 		boidSprite.tint = 0xff0000;
 		app.stage.addChild(boidSprite);
@@ -47,6 +46,7 @@ function updateBoids (boidsData) {
 	boidsData.forEach((boid, index) => {
 		boidSprites[index].x = boid.x;
 		boidSprites[index].y = boid.y;
+		boidSprites[index].angle = Math.atan2(boid.dy, boid.dx);
 	});
 }
 
@@ -59,3 +59,9 @@ function resize () {
 }
 
 resize();
+
+// updateBoids([{ x: 10, y: 20, dx: 4, dy: 2 }, { x: 30, y: 40, dx: 4, dy: -2 }]);
+
+export {
+	updateBoids
+};
