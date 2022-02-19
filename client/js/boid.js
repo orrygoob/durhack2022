@@ -7,14 +7,10 @@ class Scene {
 		this.width = screenWidth;
 		this.height = screenHeight;
 
-		const boidVelocity = 1.0;
-
 		for (let i = 0; i < numBoids; i++) {
 			const x = Math.random() * screenWidth;
 			const y = Math.random() * screenHeight;
-			const dx = Math.random() * 2 * boidVelocity - boidVelocity;
-			const dy = Math.random() * 2 * boidVelocity - boidVelocity;
-			const b = new Boid(x, y, dx, dy);
+			const b = new Boid(x, y, 0, 0);
 			this.registerBoid(b);
 		}
 
@@ -28,7 +24,7 @@ class Scene {
 
 	nearbyBoids (boid) {
 		const nearby = [];
-		const viewRadius = 10.0;
+		const viewRadius = 0.2;
 		for (const b of this.boids) {
 			if (b === boid) continue;
 
@@ -47,7 +43,7 @@ class Scene {
 			b.x += b.dx * delta;
 			b.y += b.dy * delta;
 
-			const mag = 0.25;
+			const mag = 0.00025;
 			const dx = Math.random() * 2 * mag - mag;
 			const dy = Math.random() * 2 * mag - mag;
 
@@ -97,7 +93,7 @@ class Boid {
 	}
 }
 
-const scene = new Scene(100, 100, 100);
+const scene = new Scene(500, 1.0, 1.0);
 setTickerCallback((delta) => {
 	scene.tick(delta);
 });
