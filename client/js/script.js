@@ -1,4 +1,8 @@
-var app = new PIXI.Application(800, 600, { backgroundColor: 0x1099bb });
+var app = new PIXI.Application({
+    autoResize: true,
+    resolution: devicePixelRatio,
+    backgroundColor: 0x1099bb,
+});
 document.body.appendChild(app.view);
 
 var container = new PIXI.Container();
@@ -6,11 +10,13 @@ var container = new PIXI.Container();
 app.stage.addChild(container);
 
 // Create a new texture
-var texture = PIXI.Texture.fromImage('examples/assets/bunny.png');
+var texture = PIXI.Texture.from('../assets/textures/triangle.png');
 
 // Create a 5x5 grid of bunnies
 for (var i = 0; i < 25; i++) {
     var bunny = new PIXI.Sprite(texture);
+    bunny.width = 10;
+    bunny.height = 10;
     bunny.anchor.set(0.5);
     bunny.x = (i % 5) * 40;
     bunny.y = Math.floor(i / 5) * 40;
@@ -31,3 +37,13 @@ app.ticker.add(function (delta) {
     // use delta to create frame-independent transform
     container.rotation -= 0.01 * delta;
 });
+
+window.addEventListener('resize', resize);
+
+// https://jsfiddle.net/bigtimebuddy/oaLwp0p9/
+function resize() {
+    app.renderer.resize(window.innerWidth, window.innerHeight);
+    rect.position.set(app.screen.width, app.screen.height);
+}
+
+resize();
