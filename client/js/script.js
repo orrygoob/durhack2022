@@ -17,6 +17,9 @@ let boidSprites = [];
 let playerSprites = [];
 let playerID = -1;
 
+let cachedPlayersData = null;
+let cachedBoidsData = null;
+
 document.addEventListener('DOMContentLoaded', () => {
 	previewTint();
 
@@ -75,7 +78,6 @@ function onLogin () {
 		const jsonData = JSON.parse(event.data);
 		if (jsonData.boids === undefined) {
 			playerID = jsonData.playerID;
-			alert(playerID);
 		} else {
 			updateBoids(jsonData.boids);
 			updatePlayers(jsonData.players);
@@ -140,8 +142,8 @@ function registerPlayerSprites (playersData) {
 	playerSprites = [];
 	playersData.forEach((player) => {
 		const playerSprite = new PIXI.Sprite(boidTexture);
-		playerSprite.width = 20;
-		playerSprite.height = 20;
+		playerSprite.width = 16;
+		playerSprite.height = 16;
 		playerSprite.anchor.set(0.5, 0.5);
 		playerSprites.push(playerSprite);
 		playerSprite.tint = player.tint;
@@ -158,8 +160,12 @@ function clearStage () {
 
 function updateBoids (boidsData) {
 	if (boidsData.length !== boidSprites.length) {
+		// FIXME
 		clearStage();
 		registerBoidSprites(boidsData);
+		if (cachedPlayersData !== null) {
+			registerPlayerSprites(cachedPlayersData);
+		}
 	}
 
 	const size = getSize();
@@ -170,22 +176,29 @@ function updateBoids (boidsData) {
 		boidSprites[index].angle = Math.atan2(boid.dy ?? 0, boid.dx ?? 0) * (180 / Math.PI) + 90;
 		boidSprites[index].tint = boid.tint ?? 0xffffff;
 	});
+
+	cachedBoidsData = boidsData;
 }
 
 function updatePlayers (playersData) {
 	if (playersData.length !== playerSprites.length) {
+		// FIXME
 		clearStage();
 		registerPlayerSprites(playersData);
+		if (cachedBoidsData !== null) {
+			registerBoidSprites(cachedBoidsData);
+		}
 	}
 
 	const size = getSize();
-
 	playersData.forEach((player, index) => {
 		playerSprites[index].x = (player.x ?? 0) * size;
 		playerSprites[index].y = (player.y ?? 0) * size;
 		playerSprites[index].angle = Math.atan2(player.dy ?? 0, player.dx ?? 0) * (180 / Math.PI) + 90;
 		playerSprites[index].tint = player.tint ?? 0xffffff;
 	});
+
+	cachedPlayersData = playersData;
 }
 
 function getSize () {
@@ -213,7 +226,7 @@ app.ticker.add((delta) => {
 		tickerCallback(delta);
 	}
 });
-
+// updatePlayers([{ playerID: 0, x: 0.2, y: 0.2, tint: 0x00ff00, name: 'Hi' }]);
 // updateBoids([{ x: 30 / 100, y: 30 / 100, dx: -1, dy: -0.5, tint: 0xff0000 }, { x: 100 / 100, y: 100 / 100, dx: 0, dy: 0, tint: 0x00ff00 }]);
 
 export {
