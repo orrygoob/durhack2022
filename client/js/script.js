@@ -62,6 +62,20 @@ resize();
 
 // updateBoids([{ x: 10, y: 20, dx: 4, dy: 2 }, { x: 30, y: 40, dx: 4, dy: -2 }]);
 
+let tickerCallback = null;
+
+function setTickerCallback(callback) {
+    tickerCallback = callback;
+}
+
+app.ticker.add((delta) => {
+    //console.log (tickerCallback);
+    if (tickerCallback) {
+        tickerCallback(delta);
+    }
+});
+
 export {
-	updateBoids
+	updateBoids,
+    setTickerCallback
 };
