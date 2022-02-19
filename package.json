@@ -18,6 +18,7 @@
   "homepage": "https://github.com/orrygoob/durhack2022#readme",
   "description": "",
   "dependencies": {
+    "eslint-config-standard": "^16.0.3",
     "express": "^4.17.3",
     "pixi.js": "^6.2.2"
   },
