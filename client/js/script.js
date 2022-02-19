@@ -1,3 +1,13 @@
+const boids = [
+    { x: 10, y: 10 },
+    { dx: 1, dy: 1 },
+];
+
+const players = [
+    { id: 0, name: 'Alice', x: 200, y: 0 },
+    { id: 1, name: 'Bob', x: 300, y: 200 },
+];
+
 var app = new PIXI.Application({
     autoResize: true,
     resolution: devicePixelRatio,
@@ -9,19 +19,19 @@ var container = new PIXI.Container();
 
 app.stage.addChild(container);
 
-// Create a new texture
-var texture = PIXI.Texture.from('../assets/textures/triangle.png');
+var boidTexture = PIXI.Texture.from('../assets/textures/triangle.png');
 
-// Create a 5x5 grid of bunnies
 for (var i = 0; i < 25; i++) {
-    var bunny = new PIXI.Sprite(texture);
-    bunny.width = 10;
-    bunny.height = 10;
-    bunny.anchor.set(0.5);
-    bunny.x = (i % 5) * 40;
-    bunny.y = Math.floor(i / 5) * 40;
-    container.addChild(bunny);
+    var boid = new PIXI.Sprite(boidTexture);
+    boid.width = 10;
+    boid.height = 10;
+    boid.anchor.set(0.5);
+    boid.x = (i % 5) * 40;
+    boid.y = Math.floor(i / 5) * 40;
+    container.addChild(boid);
 }
+
+var boidSprites = [];
 
 // Move container to the center
 container.x = app.screen.width / 2;
