@@ -29,6 +29,7 @@ class Vector {
 
 	normalized () {
 		const mag = this.magnitude;
+		if (mag === 0) return Vector.zero;
 		return new Vector(this.x / mag, this.y / mag);
 	}
 }
@@ -52,25 +53,19 @@ class Scene {
 	updatePlayer (id, _x, _y, _name, _tint) {
 		let playerID = -1;
 		// Client doesn't know what player it is
-		if (id == -1) 
-		{
+		if (id === -1) {
 			// Create player
 			this.players.push({ id: this.players.length, x: _x, y: _y, name: _name, tint: _tint });
 
 			// Tell player who they are
 			playerID = this.players.length;
-		}
-		// Player is wrong about who they are (Array index error)
-		else if (id >= this.players.length)
-		{
+		} else if (id >= this.players.length) { // Player is wrong about who they are (Array index error)
 			// Create new player
 			this.players.push({ id: this.players.length, x: _x, y: _y, name: _name, tint: _tint });
 
 			// Tell player who they are
 			playerID = this.players.length;
-		}
-		else
-		{
+		} else {
 			this.players[id].x = _x;
 			this.players[id].y = _y;
 			this.players[id].tint = _tint;
@@ -147,24 +142,43 @@ class Boid {
 		const separationFactor = 1.0;
 		const alignmentFactor = 1.0;
 
-		const alignmentVec = Vector.zero;
-		const separationVec = Vector.zero;
+		const separationDistance = 0.05;
+
+		let separationVec = Vector.zero;
 
 		let centerOfGroup = Vector.zero;
+		let averageRotation = 0.0;
 
 		const nearby = scene.nearbyBoids(this);
+		if (!nearby.length) return;
+
 		for (const b of nearby) {
 			// cohesion:
 			centerOfGroup = centerOfGroup.add(b.pos);
 
 			// separation:
+			const dist = this.distance(b);
+			if (dist <= separationDistance && dist !== 0) {
+				const deltaVec = this.pos.sub(b.pos).normalized().mul(1 / dist ** 2);
+				separationVec = separationVec.add(deltaVec);
+			}
+
+			// alignment:
+			averageRotation += b.rotation;
 		}
+		// cohesion:
 		centerOfGroup = centerOfGroup.mul(1 / nearby.length);
+		const cohesionVec = centerOfGroup.sub(this.pos).normalized().mul(cohesionFactor);
 
-		const cohesionVec = centerOfGroup.sub(this.pos).normalized();
+		// separation:
+		separationVec = separationVec.normalized().mul(separationFactor);
 
+		// alignment:
+		averageRotation /= nearby.length;
+		const alignmentVec = new Vector(0, 0);
+
+		// calculate acceleration:
 		const acceleration = cohesionVec.add(alignmentVec).add(separationVec).normalized().mul(accelerationFactor);
-
 		this.velocity = this.velocity.add(acceleration);
 	}
 }
