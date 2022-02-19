@@ -10,11 +10,10 @@ const myWebsocket = expressWs.getWss('/');
 
 app.ws('/', function(ws, req) {
     ws.onmessage = function(msg) {
-        console.log(msg);
-        //player = JSON.parse(msg);
+        player = JSON.parse(msg.data);
         // { id, x, y, name, tint }
-
-
+        console.log(player);
+        ws.send(JSON.stringify({ playerID: 1 }));
     };
 });
 
