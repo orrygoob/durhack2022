@@ -1,5 +1,6 @@
 const express = require('express');
 var expressWs = require('express-ws');
+const { json } = require('express/lib/response');
 
 var expressWs = expressWs(express());
 var app = expressWs.app;
@@ -10,12 +11,17 @@ var myWebsocket = expressWs.getWss('/');
 
 app.ws('/', function(ws, req) {
     ws.onmessage = function(msg) {
-        console.log(msg.data);
+        player = JSON.parse(msg);
+        
     };
 });
 
-myWebsocket.clients.forEach(function (client) {
-    client.send(msg.data + "somefrf");
-});
+// Callback to be attached to scene tick method
+function tickCallback(json) {
+    myWebsocket.clients.forEach(function (client) {
+        client.send(json);
+    });
+}
+
 
 module.exports = app;
