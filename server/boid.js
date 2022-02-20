@@ -54,7 +54,7 @@ class Scene {
 		console.log(id);
 		if (id === -1) {
 			// Create player
-			this.players.push({ id: this.players.length, x: _x, y: _y, name: _name, tint: _tint });
+			this.players.push({ id: this.players.length, pos: new Vector(_x, _y), name: _name, tint: _tint });
 
 			// Tell player who they are
 			playerID = this.players.length;
@@ -65,8 +65,8 @@ class Scene {
 			// Tell player who they are
 			playerID = this.players.length;
 		} else {
-			this.players[id].x = _x;
-			this.players[id].y = _y;
+			this.players[id].pos.x = _x;
+			this.players[id].pos.y = _y;
 			this.players[id].tint = _tint;
 			this.players[id].tint = _name;
 
@@ -169,9 +169,8 @@ class Boid {
 		let centerOfGroup = Vector.zero;
 
 		// fear:
-		const pointsToAvoid = [new Vector(0.5, 0.2), new Vector(0.5, 0.8)];
-		for (const point of pointsToAvoid) {
-			let pointDeltaVec = this.pos.sub(point);
+		for (const player of this.scene.players) {
+			let pointDeltaVec = this.pos.sub(player.pos);
 			const dist = pointDeltaVec.magnitude;
 			pointDeltaVec = pointDeltaVec.normalized().mul(fearFactor / dist ** 2);
 			fearVec = fearVec.add(pointDeltaVec);
