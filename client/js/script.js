@@ -7,6 +7,8 @@ const app = new PIXI.Application({
 	backgroundColor: 0x1099bb
 });
 
+app.stage.interactive = true;
+
 const boidTexture = PIXI.Texture.from('../assets/textures/triangle.png');
 
 let boidSprites = [];
@@ -15,6 +17,11 @@ let playerID = -1;
 
 let cachedPlayersData = null;
 let cachedBoidsData = null;
+
+let socket = null;
+
+const cachedUsername = '';
+const cachedTint = '';
 
 document.addEventListener('DOMContentLoaded', () => {
 	previewTint();
@@ -66,7 +73,7 @@ function onLogin () {
 	app.view.id = 'pixi-app';
 	document.getElementById('flex-div').appendChild(app.view);
 
-	const socket = new WebSocket('ws://' + window.location.host);
+	socket = new WebSocket('ws://' + window.location.host);
 	socket.onopen = () => {
 		socket.send(JSON.stringify({ playerID: -1, x: 0, y: 0, name: getUsername(), tint: getUserTint() }));
 	};
@@ -101,6 +108,9 @@ function setUsername (username) {
 }
 
 function getUsername () {
+	if (cachedUsername !== '') {
+		return cachedUsername;
+	}
 	return localStorage.getItem('username');
 }
 
@@ -113,6 +123,9 @@ function setUserTint (tint) {
 }
 
 function getUserTint () {
+	if (cachedTint !== '') {
+		return cachedTint;
+	}
 	return localStorage.getItem('tint');
 }
 
@@ -206,8 +219,10 @@ function resize () {
 
 function interpolateBoids (delta) {
 	boidSprites.forEach((_, index) => {
-		boidSprites[index].x += cachedBoidsData[index].dx * delta;
-		boidSprites[index].y += cachedBoidsData[index].dy * delta;
+		const amount = 18000 * delta; // 18,000 is magic. Idk why it works .
+		boidSprites[index].x += cachedBoidsData[index].dx * amount;
+		boidSprites[index].y += cachedBoidsData[index].dy * amount;
+		boidSprites[index].tint = 0x00ff00;
 	});
 }
 
@@ -221,6 +236,15 @@ function setTickerCallback (callback) {
 
 app.ticker.add((delta) => {
 	interpolateBoids(delta);
+
+	if (socket !== null && playerID !== -1) {
+		app.stage.on('mousemove', (event) => {
+			const mousePos = event.data.global;
+			const size = getSize();
+			socket.send(JSON.stringify({ playerID: playerID, x: mousePos.x / size, y: mousePos.y / size, name: getUsername(), tint: getUserTint() }));
+		});
+	}
+
 	// if (tickerCallback) {
 	// 	tickerCallback(delta);
 	// }

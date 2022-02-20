@@ -37,7 +37,7 @@ class Scene {
 	constructor (numBoids) {
 		this.boids = [];
 		this.players = [];
-		this.initialVelocity = 0.0001;
+		this.initialVelocity = 0.0001;// 0.0001;
 
 		for (let i = 0; i < numBoids; i++) {
 			const pos = new Vector(Math.random(), Math.random());
@@ -124,7 +124,7 @@ class Scene {
 			});
 		}
 
-		return { boids: boidsArr };
+		return { boids: boidsArr, players: playersArr };
 	}
 }
 
