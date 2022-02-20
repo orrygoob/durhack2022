@@ -23,6 +23,9 @@ let socket = null;
 let cachedUsername = '';
 let cachedTint = '';
 
+let playerX = 0;
+let playerY = 0;
+
 document.addEventListener('DOMContentLoaded', () => {
 	previewTint();
 
@@ -55,8 +58,8 @@ document.addEventListener('DOMContentLoaded', () => {
 	document.getElementById('pixi-app').addEventListener('mousemove', (e) => {
 		if (socket !== null && playerID !== -1) {
 			const size = getSize();
-			const jsonData = JSON.stringify({ playerID: playerID, x: e.offsetX / size, y: e.offsetY / size, name: getUsername(), tint: getUserTint() });
-			socket.send(jsonData);
+			playerX = e.offsetX / size;
+			playerY = e.offsetY / size;
 		}
 	});
 });
@@ -97,6 +100,10 @@ function onLogin () {
 				updateBoids(jsonData.boids);
 				updatePlayers(jsonData.players);
 				console.log(jsonData.players);
+
+				// Send on receive.
+				const jsonData2 = JSON.stringify({ playerID: playerID, x: playerX, y: playerY, name: getUsername(), tint: getUserTint() });
+				socket.send(jsonData2);
 			}
 		}
 	};
