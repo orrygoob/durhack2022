@@ -264,7 +264,12 @@ function setTickerCallback (callback) {
 	tickerCallback = callback;
 } */
 
+let now = performance.now();
+
 app.ticker.add((delta) => {
+	const curTime = performance.now();
+	console.log('delta: ', delta, ' better delta: ', curTime - now);
+	now = curTime;
 	interpolateBoids(delta);
 
 	if (socket !== null && playerID !== -1) {
