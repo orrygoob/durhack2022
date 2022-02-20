@@ -99,10 +99,10 @@ function onLogin () {
 			prevPlayerX.push(playerX);
 			prevPlayerY.push(playerY);
 
-			if (prevPlayerX.length >= 20) {
+			if (prevPlayerX.length >= 10) {
 				prevPlayerX.shift();
 			}
-			if (prevPlayerY.length >= 20) {
+			if (prevPlayerY.length >= 10) {
 				prevPlayerY.shift();
 			}
 
