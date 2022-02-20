@@ -101,8 +101,8 @@ function onLogin () {
 				updatePlayers(jsonData.players);
 
 				// Send on receive.
-				const dx = playerX - cachedPlayersData[playerID].x;
-				const dy = playerY - cachedPlayersData[playerID].y;
+				const dx = playerX - cachedPlayersData[playerID]?.x;
+				const dy = playerY - cachedPlayersData[playerID]?.y;
 				const jsonData2 = JSON.stringify({ playerID: playerID, x: playerX, y: playerY, dx: dx, dy: dy, name: getUsername(), tint: getUserTint() });
 				socket.send(jsonData2);
 			}
