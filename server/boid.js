@@ -52,7 +52,7 @@ class Scene {
 
 	// Update player position, name and color. Return the player ID
 	updatePlayer (_playerID, _x, _y, _name, _tint) {
-		if (_playerID >= 0) {
+		if (_playerID !== null && _playerID >= 0) {
 			let id = 0;
 			while (this.players[id] !== null && id < this.players.length && _playerID !== this.players[id].id) id++;
 
@@ -66,7 +66,7 @@ class Scene {
 				return _playerID;
 			}
 		}
-		console.log('New Player: ' + (this.allTimePlayerCount + 1));
+
 		// Client doesn't know what player it is
 		this.allTimePlayerCount += 1;
 		// Create new player
