@@ -1,24 +1,26 @@
 const express = require('express');
-let expressWs = require('express-ws');
-const { Scene } = require('./boid');
+const app = express();
+const http = require('http');
+const server = http.createServer(app);
+const { Server } = require("socket.io");
+const io = new Server(server);
 
-expressWs = expressWs(express());
-const app = expressWs.app;
+const { Scene } = require('./boid');
 
 app.use(express.static('client'));
 
-const myWebsocket = expressWs.getWss('/');
+io.on('connection', (socket) => {
+    console.log('User ' + player.name + 'connected');
+    socket.on('update player', () => {
+        socket.emit('data frame', JSON.stringify({ playerID: myScene.updatePlayer(player.playerID, player.x, player.y, player.name, player.tint) }));
+    });
+
+    socket.on('disconnect', () => {
+        console.log('user disconnected');
+    });
+});
 
 const myScene = new Scene(50);
-
-app.ws('/', function(ws, req) {
-    ws.onmessage = function(msg) {
-        const player = JSON.parse(msg.data);
-        // { id, x, y, name, tint }
-        console.log(player);
-        ws.send(JSON.stringify({ playerID: myScene.updatePlayer(player.playerID, player.x, player.y, player.name, player.tint) }));
-    };
-});
 
 function intervalFunc() {
     myScene.tick(50);
@@ -35,9 +37,8 @@ function intervalFunc() {
             { playerID: 1, x: 0, y: 0, name: "Orry", tint: 10000000 }
         ] 
     };*/
-    myWebsocket.clients.forEach(function (client) {
-        client.send(JSON.stringify(json));
-    });
+    
+    io.emit(JSON.stringify(json));
 }
   
 setInterval(intervalFunc, 50);
