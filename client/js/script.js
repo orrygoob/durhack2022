@@ -20,8 +20,8 @@ let cachedBoidsData = null;
 
 let socket = null;
 
-const cachedUsername = '';
-const cachedTint = '';
+let cachedUsername = '';
+let cachedTint = '';
 
 document.addEventListener('DOMContentLoaded', () => {
 	previewTint();
@@ -105,6 +105,7 @@ function setUsername (username) {
 	} else {
 		localStorage.setItem('username', username);
 	}
+	cachedUsername = username;
 }
 
 function getUsername () {
@@ -120,6 +121,7 @@ function setUserTint (tint) {
 	} else {
 		localStorage.setItem('tint', tint);
 	}
+	cachedTint = tint;
 }
 
 function getUserTint () {
@@ -152,6 +154,10 @@ function registerPlayerSprites (playersData) {
 		playerSprites.push(playerSprite);
 		playerSprite.tint = player.tint;
 		app.stage.addChild(playerSprite);
+
+		const text = new PIXI.Text('Basic text in pixi');
+		playerSprite.addChild(text);
+		text.y = 20;
 	});
 }
 
@@ -196,8 +202,10 @@ function updatePlayers (playersData) {
 
 	const size = getSize();
 	playersData.forEach((player, index) => {
-		playerSprites[index].x = (player.x ?? 0) * size;
-		playerSprites[index].y = (player.y ?? 0) * size;
+		if (player.id !== playerID) {
+			playerSprites[index].x = (player.x ?? 0) * size;
+			playerSprites[index].y = (player.y ?? 0) * size;
+		}
 		playerSprites[index].angle = Math.atan2(player.dy ?? 0, player.dx ?? 0) * (180 / Math.PI) + 90;
 		playerSprites[index].tint = player.tint ?? 0xffffff;
 	});

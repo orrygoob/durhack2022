@@ -21,7 +21,7 @@ app.ws('/', function (ws, req) {
 });
 
 function intervalFunc () {
-	myScene.tick(50);
+	myScene.tick(200);
 	const json = myScene.getJSON();
 	/* const json = {
         boids: [
@@ -40,6 +40,6 @@ function intervalFunc () {
 	});
 }
 
-setInterval(intervalFunc, 50);
+setInterval(intervalFunc, 200);
 
 module.exports = app;
