@@ -10,7 +10,7 @@ app.use(express.static('client'));
 
 const myWebsocket = expressWs.getWss('/');
 
-const game = new Game();
+const game = new Game(levelChangeCallback);
 
 app.ws('/', function (ws, req) {
 	if (!game.started) {
@@ -37,6 +37,12 @@ function intervalFunc () {
 			client.send(JSON.stringify(json));
 		});
 	}
+}
+
+function levelChangeCallback (goalDescriptors) {
+	myWebsocket.clients.forEach(function (client) {
+		client.send(JSON.stringify({ goalSet: goalDescriptors }));
+	});
 }
 
 const now = process.hrtime();
