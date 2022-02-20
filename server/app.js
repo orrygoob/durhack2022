@@ -15,32 +15,23 @@ const myScene = new Scene(200);
 app.ws('/', function (ws, req) {
 	ws.onmessage = function (msg) {
 		const player = JSON.parse(msg.data);
-		// { id, x, y, name, tint }
-		// console.log(player);
 		ws.send(JSON.stringify({ playerID: myScene.updatePlayer(player.playerID, player.x, player.y, player.name, player.tint) }));
 	};
 });
 
 function intervalFunc () {
-	myScene.tick(Config.server.tick);
+	const now = process.hrtime();
+	const delta = (now[0] * 1000 + now[1] / 1000000) - prevTime;
+	prevTime += delta;
+	myScene.tick(delta);
 	const json = myScene.getJSON();
-	/* const json = {
-        boids: [
-            {x: 0, y: 0, dx: 0, dy: 0},
-            {x: 0, y: 1, dx: 0, dy: 0},
-            {x: 1, y: 0, dx: 0, dy: 0},
-            {x: 1, y: 1, dx: 0, dy: 0}
-        ],
-        players:
-        [
-            { playerID: 1, x: 0, y: 0, name: "Orry", tint: 10000000 }
-        ]
-    }; */
 	myWebsocket.clients.forEach(function (client) {
 		client.send(JSON.stringify(json));
 	});
 }
 
+const now = process.hrtime();
+let prevTime = (now[0] * 1000 + now[1] / 1000000);
 setInterval(intervalFunc, Config.server.tick);
 
 module.exports = app;
