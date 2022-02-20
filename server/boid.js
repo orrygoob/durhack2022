@@ -118,8 +118,7 @@ class Scene {
 		const playersArr = [];
 		const newPlayers = [];
 		for (const p of this.players) {
-			if (p.lastSeen > Date.now() - Config.game.playerTimeout) 
-			{
+			if (p.lastSeen > Date.now() - Config.game.playerTimeout) {
 				newPlayers.push(p);
 
 				playersArr.push({
