@@ -58,7 +58,7 @@ class Scene {
 			this.players.push({ id: this.players.length, pos: new Vector(_x, _y), name: _name, tint: _tint, lastSeen: Date.now() });
 
 			// Tell player who they are
-			playerID = this.players.length;
+			playerID = this.players.length - 1;
 		} else {
 			playerID = id;
 
@@ -112,21 +112,20 @@ class Scene {
 		const playersArr = [];
 		const newPlayers = [];
 		for (const p of this.players) {
-			if (p.lastSeen > Date.now() - Config.game.playerTimeout) {
-				newPlayers.push(p);
+			// if (p.lastSeen > Date.now() - Config.game.playerTimeout) {
+			newPlayers.push(p);
 
-				playersArr.push({
-					playerID: p.id,
-					x: p.pos.x,
-					y: p.pos.y,
-					name: p.name,
-					tint: p.tint
-				});
-			}
+			playersArr.push({
+				playerID: p.id,
+				x: p.pos.x,
+				y: p.pos.y,
+				name: p.name,
+				tint: p.tint
+			});
+			// }
 		}
 
 		this.players = newPlayers;
-
 		return { boids: boidsArr, players: playersArr };
 	}
 }
