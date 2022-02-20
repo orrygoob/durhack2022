@@ -73,5 +73,9 @@ canvas {
     display: flex;
     position: absolute;
     margin: 1em;
-    color: gray
+    color: gray;
+}
+
+p {
+    pointer-events: none;
 }

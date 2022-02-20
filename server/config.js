@@ -7,8 +7,8 @@ const Config = {
 		cohesionFactor: 2,
 		separationFactor: 1.5,
 		alignmentFactor: 0.5,
-		fearFactor: 0.03,
-		separationDistance: 0.05
+		fearFactor: 0.05,
+		separationDistance: 0.03
 	},
 	game: {
 		playerTimeout: 1000

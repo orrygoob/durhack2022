@@ -1,5 +1,5 @@
 const Config = {
-	interpolation: true
+	interpolation: false
 };
 
 export { Config };
