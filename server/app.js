@@ -9,7 +9,7 @@ app.use(express.static('client'));
 
 const myWebsocket = expressWs.getWss('/');
 
-const myScene = new Scene(500);
+const myScene = new Scene(50);
 
 app.ws('/', function(ws, req) {
     ws.onmessage = function(msg) {
@@ -21,7 +21,7 @@ app.ws('/', function(ws, req) {
 });
 
 function intervalFunc() {
-    myScene.tick(10);
+    myScene.tick(50);
     const json = myScene.getJSON();
     /*const json = { 
         boids: [
@@ -40,6 +40,6 @@ function intervalFunc() {
     });
 }
   
-setInterval(intervalFunc, 10);
+setInterval(intervalFunc, 50);
 
 module.exports = app;

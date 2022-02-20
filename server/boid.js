@@ -112,6 +112,18 @@ class Scene {
 				tint: b.tint
 			});
 		}
+
+		const playersArr = [];
+		for (const p of this.players) {
+			playersArr.push({
+				playerID: p.id,
+				x: p.x,
+				y: p.y,
+				name: p.name,
+				tint: p.tint
+			});
+		}
+
 		return { boids: boidsArr };
 	}
 }
