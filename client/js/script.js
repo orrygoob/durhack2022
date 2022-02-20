@@ -14,6 +14,7 @@ const boidTexture = PIXI.Texture.from('../assets/textures/sheep_from_above_low_r
 const playerTexture = PIXI.Texture.from('../assets/textures/dog_low_res.png');
 
 let boidSprites = [];
+let zoneObjects = [];
 let playerSprites = {};
 let playerID = -1;
 
@@ -117,8 +118,26 @@ function onLogin () {
 
 	socket.onmessage = async (event) => {
 		const jsonData = JSON.parse(event.data);
-		if (jsonData.boids === undefined) {
+		if (jsonData.boids === undefined && !jsonData.goalSet) {
 			playerID = jsonData.playerID;
+		} else if (jsonData.goalSet) {
+			console.log('data:', jsonData);
+
+			for (const zone of zoneObjects) {
+				app.stage.removeChild(zone);
+			}
+			zoneObjects = [];
+
+			for (let i = 0; i < jsonData.goalSet.length; i++) {
+				if (jsonData.goalSet[i]) {
+					const gr = new PIXI.Graphics();
+					gr.beginFill(0xff0000);
+					gr.drawCircle((i % 2) * getSize(), Math.floor(i / 2) * getSize(), jsonData.goalSet[i] * getSize());
+					gr.endFill();
+					zoneObjects.push(gr);
+					app.stage.addChild(gr);
+				}
+			}
 		} else {
 			if (playerID !== -1) {
 				// Send on receive.
@@ -233,7 +252,9 @@ function registerPlayerSprites (playersData) {
 // https://www.html5gamedevs.com/topic/840-remove-all-children-from-a-stage/?do=findComment&comment=4707
 function clearStage () {
 	for (let i = app.stage.children.length - 1; i >= 0; i--) {
-		app.stage.removeChild(app.stage.children[i]);
+		if (!zoneObjects.includes(app.stage.children[i])) {
+			app.stage.removeChild(app.stage.children[i]);
+		}
 	}
 }
 

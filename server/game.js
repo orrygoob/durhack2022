@@ -19,13 +19,13 @@ class Game {
 			// test values for level 0:
 			this.zoneSize = 0.2;
 			this.zones = [this.zoneSize, 0, this.zoneSize, 0];
-			this.percentage = 0.8;
+			this.percentage = 0.1;
 		} else {
 			console.log('WINNER!');
 
 			// TODO: this is an impossible game:
-			this.zoneSize = 0;
-			this.zones = [0, 0, 0, 0];
+			this.zoneSize = 0.3;
+			this.zones = [0, this.zoneSize, 0, 0];
 			this.percentage = 1;
 		}
 
