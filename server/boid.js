@@ -54,6 +54,7 @@ class Scene {
 	updatePlayer (_playerID, _x, _y, _name, _tint) {
 		if (_playerID !== null && _playerID >= 0) {
 			let id = 0;
+		  let isNewPlayer = false;
 			while (this.players[id] !== null && id < this.players.length && _playerID !== this.players[id].id) id++;
 
 			if (this.players[id] !== null && _playerID === this.players[id].id) {
@@ -63,7 +64,7 @@ class Scene {
 				this.players[id].name = _name;
 				this.players[id].lastSeen = Date.now();
 
-				return _playerID;
+				return [_playerID, false];
 			}
 		}
 
@@ -72,7 +73,7 @@ class Scene {
 		// Create new player
 		this.players.push({ id: this.allTimePlayerCount, pos: new Vector(_x, _y), name: _name, tint: _tint, lastSeen: Date.now() });
 
-		return this.allTimePlayerCount;
+		return [this.allTimePlayerCount, true];
 	}
 
 	registerBoid (boid) {

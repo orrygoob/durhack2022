@@ -10,8 +10,8 @@ const app = new PIXI.Application({
 
 app.stage.interactive = true;
 
-const boidTexture = PIXI.Texture.from('../assets/textures/triangle.png');
-const playerTexture = PIXI.Texture.from('../assets/textures/triangle.png');
+const boidTexture = PIXI.Texture.from('../assets/textures/sheep_from_above_low_res.png');
+const playerTexture = PIXI.Texture.from('../assets/textures/dog_low_res.png');
 
 let boidSprites = [];
 let playerSprites = {};
