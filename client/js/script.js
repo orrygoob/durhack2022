@@ -1,5 +1,6 @@
 /* global PIXI */
 'use strict';
+import { Config } from './config.js';
 
 const app = new PIXI.Application({
 	autoResize: true,
@@ -89,9 +90,7 @@ function onLogin () {
 		socket.send(JSON.stringify({ playerID: -1, x: 0, y: 0, name: getUsername(), tint: getUserTint() }));
 	};
 
-	let nFrames = 0;
 	socket.onmessage = async (event) => {
-		nFrames++;
 		const jsonData = JSON.parse(event.data);
 		if (jsonData.boids === undefined) {
 			playerID = jsonData.playerID;
@@ -99,7 +98,6 @@ function onLogin () {
 			if (playerID !== -1) {
 				updateBoids(jsonData.boids);
 				updatePlayers(jsonData.players);
-				console.log(jsonData.players);
 
 				// Send on receive.
 				const jsonData2 = JSON.stringify({ playerID: playerID, x: playerX, y: playerY, name: getUsername(), tint: getUserTint() });
@@ -107,10 +105,6 @@ function onLogin () {
 			}
 		}
 	};
-	setInterval(() => {
-		console.log('FPS: ', nFrames);
-		nFrames = 0;
-	}, 1000);
 }
 
 function logout () {
@@ -273,9 +267,11 @@ function setTickerCallback (callback) {
 let now = performance.now();
 
 app.ticker.add((delta) => {
-	const curTime = performance.now();
-	now = curTime;
-	interpolateBoids(curTime - now);
+	if (Config.interpolate) {
+		const curTime = performance.now();
+		now = curTime;
+		interpolateBoids(curTime - now);
+	}
 
 	if (socket !== null && playerID !== -1) {
 		/* app.stage.on('mousemove', (event) => {
