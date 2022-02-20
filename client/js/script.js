@@ -230,6 +230,7 @@ function updatePlayers (playersData) {
 	}
 
 	const size = getSize();
+	console.log(playersData);
 	playersData.forEach((player, index) => {
 		if (player.x === undefined || player.y === undefined || player.dy === undefined || player.dx === undefined || player.tint === undefined) {
 			console.error('Undefined property of player.');
