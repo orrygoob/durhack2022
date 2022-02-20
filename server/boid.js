@@ -53,19 +53,18 @@ class Scene {
 	// Update player position, name and color. Return the player ID
 	updatePlayer (_playerID, _x, _y, _dx, _dy, _name, _tint) {
 		if (_playerID !== null && _playerID >= 0) {
-			let id = 0;
-			while (this.players[id] !== null && id < this.players.length && _playerID !== this.players[id].id) id++;
+			for (let id = 0; id < this.players.length; id++) {
+				if (this.players[id] && this.players[id].id === _playerID) {
+					this.players[id].pos.x = _x;
+					this.players[id].pos.y = _y;
+					this.players[id].vel.x = _dx;
+					this.players[id].vel.y = _dy;
+					this.players[id].tint = _tint;
+					this.players[id].name = _name;
+					this.players[id].lastSeen = Date.now();
 
-			if (this.players[id] !== null && _playerID === this.players[id].id) {
-				this.players[id].pos.x = _x;
-				this.players[id].pos.y = _y;
-				this.players[id].vel.x = _dx;
-				this.players[id].vel.y = _dy;
-				this.players[id].tint = _tint;
-				this.players[id].name = _name;
-				this.players[id].lastSeen = Date.now();
-
-				return [_playerID, false];
+					return [_playerID, false];
+				}
 			}
 		}
 
