@@ -83,7 +83,6 @@ function onLogin () {
 
 	socket = new WebSocket('ws://' + window.location.host);
 	socket.onopen = () => {
-		alert('A');
 		socket.send(JSON.stringify({ playerID: -1, x: 0, y: 0, name: getUsername(), tint: getUserTint() }));
 	};
 
@@ -249,7 +248,7 @@ function resize () {
 
 function interpolateBoids (delta) {
 	boidSprites.forEach((_, index) => {
-		const amount = 18000 * delta; // 18,000 is magic. Idk why it works.
+		const amount = 1000 * delta; // 18,000 is magic. Idk why it works.
 		boidSprites[index].x += cachedBoidsData[index].dx * amount;
 		boidSprites[index].y += cachedBoidsData[index].dy * amount;
 		boidSprites[index].tint = 0x00ff00;
@@ -268,9 +267,8 @@ let now = performance.now();
 
 app.ticker.add((delta) => {
 	const curTime = performance.now();
-	console.log('delta: ', delta, ' better delta: ', curTime - now);
 	now = curTime;
-	interpolateBoids(delta);
+	interpolateBoids(curTime - now);
 
 	if (socket !== null && playerID !== -1) {
 		/* app.stage.on('mousemove', (event) => {

@@ -14,6 +14,7 @@ const myScene = new Scene(200);
 
 app.ws('/', function (ws, req) {
 	ws.onmessage = function (msg) {
+		console.log(msg.data);
 		const player = JSON.parse(msg.data);
 		ws.send(JSON.stringify({ playerID: myScene.updatePlayer(player.playerID, player.x, player.y, player.name, player.tint) }));
 	};
