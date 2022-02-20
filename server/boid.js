@@ -56,7 +56,7 @@ class Scene {
 			let id = 0;
 			while (this.players[id] !== null && id < this.players.length && _playerID !== this.players[id].id) id++;
 
-			if (_playerID === this.players[id].id) {
+			if (this.players[id] !== null && _playerID === this.players[id].id) {
 				this.players[id].pos.x = _x;
 				this.players[id].pos.y = _y;
 				this.players[id].tint = _tint;
