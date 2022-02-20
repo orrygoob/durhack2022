@@ -10,28 +10,44 @@ class Game {
 	start () {
 		this.scene = new Scene(200);
 		this.started = true;
-		this.startLevel(0);
+		this.levelNo = 0;
+		this.startLevel(this.levelNo);
 	}
 
 	startLevel (levelNo) {
-		this.zones = [0.2, 0, 0.2, 0];
+		if (levelNo === 0) {
+			// test values for level 0:
+			this.zoneSize = 0.2;
+			this.zones = [this.zoneSize, 0, this.zoneSize, 0];
+			this.percentage = 0.8;
+		} else {
+			console.log('WINNER!');
+
+			// TODO: this is an impossible game:
+			this.zoneSize = 0;
+			this.zones = [0, 0, 0, 0];
+			this.percentage = 1;
+		}
+
 		if (this.newLevelCallback) {
-			this.newLevelCallback(this.zones);
+			this.newLevelCallback(this.zones, levelNo);
 		}
 	}
 
 	tick (delta) {
 		this.scene.tick(delta);
 
-		// DEBUG:
-		const players = this.scene.players;
-		if (players.length) {
-			const player = players[0];
-			const pos = player.pos;
-			const zone = this.posInAZone(pos, 0.2);
-			if (zone !== 0) {
-				// player is in a corner
+		let caughtCount = 0;
+		const boids = this.scene.boids;
+		for (const boid of boids) {
+			const pos = boid.pos;
+			const zone = this.posInAZone(pos, this.zoneSize);
+			if (zone !== -1 && this.zones[zone]) {
+				caughtCount++;
 			}
+		}
+		if (caughtCount / boids.length >= this.percentage) {
+			this.startLevel(++this.levelNo);
 		}
 	}
 
@@ -41,7 +57,7 @@ class Game {
 		zones[1] = pos.sub(new Vector(1, 0)).magnitude < zoneRadius;
 		zones[2] = pos.sub(new Vector(0, 1)).magnitude < zoneRadius;
 		zones[3] = pos.sub(new Vector(1, 1)).magnitude < zoneRadius;
-		return zones.indexOf(true) + 1;
+		return zones.indexOf(true);
 	}
 }
 
