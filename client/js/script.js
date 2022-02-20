@@ -116,13 +116,6 @@ function getUserTint () {
 	return localStorage.getItem('tint');
 }
 
-function setBoidSize (size) {
-	boidSprites.forEach((boidSprite) => {
-		boidSprite.width = size;
-		boidSprite.height = size;
-	});
-}
-
 function registerBoidSprites (boidsData) {
 	boidSprites = [];
 	boidsData.forEach((boid) => {
