@@ -25,6 +25,9 @@ let socket = null;
 let cachedUsername = '';
 let cachedTint = '';
 
+const prevPlayerX = [];
+const prevPlayerY = [];
+
 let playerX = -1;
 let playerY = -1;
 
@@ -60,6 +63,17 @@ document.addEventListener('DOMContentLoaded', () => {
 	document.getElementById('pixi-app').addEventListener('mousemove', (e) => {
 		if (socket !== null && playerID !== -1) {
 			const size = getSize();
+
+			prevPlayerX.push(playerX);
+			prevPlayerY.push(playerY);
+
+			if (prevPlayerX.length >= 10) {
+				prevPlayerX.shift();
+			}
+			if (prevPlayerY.length >= 10) {
+				prevPlayerY.shift();
+			}
+
 			playerX = e.offsetX / size;
 			playerY = e.offsetY / size;
 		}
@@ -97,17 +111,26 @@ function onLogin () {
 			playerID = jsonData.playerID;
 		} else {
 			if (playerID !== -1) {
-				updateBoids(jsonData.boids);
-				updatePlayers(jsonData.players);
-
 				// Send on receive.
-				const dx = playerX - cachedPlayersData[playerID]?.x;
-				const dy = playerY - cachedPlayersData[playerID]?.y;
+				const dx = average(prevPlayerX) - playerX;
+				const dy = average(prevPlayerY) - playerY;
+
 				const jsonData2 = JSON.stringify({ playerID: playerID, x: playerX, y: playerY, dx: dx, dy: dy, name: getUsername(), tint: getUserTint() });
 				socket.send(jsonData2);
+
+				updateBoids(jsonData.boids);
+				updatePlayers(jsonData.players);
 			}
 		}
 	};
+}
+
+function average (array) {
+	let total = 0;
+	array.forEach((item) => {
+		total += item;
+	});
+	return total / array.length;
 }
 
 function logout () {
@@ -233,12 +256,13 @@ function updatePlayers (playersData) {
 	const size = getSize();
 	playersData.forEach((player, index) => {
 		if (player.x === undefined || player.y === undefined || player.dy === undefined || player.dx === undefined || player.tint === undefined) {
-			// console.error('Undefined property of player.');
+			console.error('Undefined property of player.');
 		}
 		// if (player.id !== playerID) {
 		playerSprites[player.playerID].x = (player.x ?? 0) * size;
 		playerSprites[player.playerID].y = (player.y ?? 0) * size;
 		// }
+
 		playerSprites[player.playerID].angle = Math.atan2(player.dy ?? 0, player.dx ?? 0) * (180 / Math.PI) + 90;
 		playerSprites[player.playerID].tint = player.tint ?? 0xffffff;
 	});
