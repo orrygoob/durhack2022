@@ -1,14 +1,23 @@
 const { Vector, Scene } = require('./boid');
 
 class Game {
-	constructor () {
+	constructor (newLevelCallback) {
 		this.scene = null;
 		this.started = false;
+		this.newLevelCallback = newLevelCallback;
 	}
 
 	start () {
 		this.scene = new Scene(200);
 		this.started = true;
+		this.startLevel(0);
+	}
+
+	startLevel (levelNo) {
+		this.zones = [0.2, 0, 0.2, 0];
+		if (this.newLevelCallback) {
+			this.newLevelCallback(this.zones);
+		}
 	}
 
 	tick (delta) {
