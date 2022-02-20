@@ -8,6 +8,9 @@ const Config = {
 		alignmentFactor: 0.2,
 		fearFactor: 0.0,
 		separationDistance: 0.05
+	},
+	game: {
+		playerTimeout: 1000
 	}
 };
 

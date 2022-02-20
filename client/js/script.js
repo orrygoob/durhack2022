@@ -51,6 +51,13 @@ document.addEventListener('DOMContentLoaded', () => {
 	document.getElementById('logout-button').addEventListener('click', () => {
 		logout();
 	});
+
+	document.getElementById('pixi-app').addEventListener('mousemove', (e) => {
+		if (socket !== null && playerID !== -1) {
+			const size = getSize();
+			socket.send(JSON.stringify({ playerID: playerID, x: e.offsetX / size, y: e.offsetY / size, name: getUsername(), tint: getUserTint() }));
+		}
+	});
 });
 
 function previewTint () {
