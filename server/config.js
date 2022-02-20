@@ -1,6 +1,6 @@
 const Config = {
 	server: {
-		tick: 10 // milliseconds
+		tick: 200 // milliseconds
 	},
 	boids: {
 		cohesionFactor: 2,

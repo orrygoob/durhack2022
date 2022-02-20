@@ -77,7 +77,10 @@ function onLogin () {
 	socket.onopen = () => {
 		socket.send(JSON.stringify({ playerID: -1, x: 0, y: 0, name: getUsername(), tint: getUserTint() }));
 	};
+
+	let nFrames = 0;
 	socket.onmessage = async (event) => {
+		nFrames++;
 		const jsonData = JSON.parse(event.data);
 		if (jsonData.boids === undefined) {
 			playerID = jsonData.playerID;
@@ -88,6 +91,10 @@ function onLogin () {
 			}
 		}
 	};
+	setInterval(() => {
+		console.log('FPS: ', nFrames);
+		nFrames = 0;
+	}, 1000);
 }
 
 function logout () {
@@ -243,7 +250,7 @@ function setTickerCallback (callback) {
 } */
 
 app.ticker.add((delta) => {
-	// interpolateBoids(delta);
+	interpolateBoids(delta);
 
 	if (socket !== null && playerID !== -1) {
 		/* app.stage.on('mousemove', (event) => {
