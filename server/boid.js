@@ -154,46 +154,58 @@ class Boid {
 
 		this.pos = this.pos.add(this.velocity.mul(delta));
 
+		// parameters:
 		const cohesionFactor = 2;
 		const separationFactor = 1;
 		const alignmentFactor = 0.2;
-
+		const fearFactor = 0.03;
 		const separationDistance = 0.05;
 
+		let cohesionVec = Vector.zero;
 		let separationVec = Vector.zero;
+		let alignmentVec = Vector.zero;
+		let fearVec = Vector.zero;
 
 		let centerOfGroup = Vector.zero;
-		let alignmentVec = Vector.zero;
+
+		// fear:
+		const pointsToAvoid = [new Vector(0.5, 0.2), new Vector(0.5, 0.8)];
+		for (const point of pointsToAvoid) {
+			let pointDeltaVec = this.pos.sub(point);
+			const dist = pointDeltaVec.magnitude;
+			pointDeltaVec = pointDeltaVec.normalized().mul(fearFactor / dist ** 2);
+			fearVec = fearVec.add(pointDeltaVec);
+		}
 
 		const nearby = this.scene.nearbyBoids(this);
-		if (!nearby.length) return;
+		if (nearby.length) {
+			for (const b of nearby) {
+				// cohesion:
+				centerOfGroup = centerOfGroup.add(b.pos);
 
-		for (const b of nearby) {
+				// separation:
+				const dist = this.distance(b);
+				if (dist <= separationDistance && dist !== 0) {
+					const deltaVec = this.pos.sub(b.pos).normalized().mul(1 / dist ** 2);
+					separationVec = separationVec.add(deltaVec);
+				}
+
+				// alignment:
+				alignmentVec = alignmentVec.add(b.velocity);
+			}
 			// cohesion:
-			centerOfGroup = centerOfGroup.add(b.pos);
+			centerOfGroup = centerOfGroup.mul(1 / nearby.length);
+			cohesionVec = centerOfGroup.sub(this.pos).normalized().mul(cohesionFactor);
 
 			// separation:
-			const dist = this.distance(b);
-			if (dist <= separationDistance && dist !== 0) {
-				const deltaVec = this.pos.sub(b.pos).normalized().mul(1 / dist ** 2);
-				separationVec = separationVec.add(deltaVec);
-			}
+			separationVec = separationVec.normalized().mul(separationFactor);
 
 			// alignment:
-			alignmentVec = alignmentVec.add(b.velocity);
+			alignmentVec = alignmentVec.normalized().mul(alignmentFactor);
 		}
-		// cohesion:
-		centerOfGroup = centerOfGroup.mul(1 / nearby.length);
-		const cohesionVec = centerOfGroup.sub(this.pos).normalized().mul(cohesionFactor);
-
-		// separation:
-		separationVec = separationVec.normalized().mul(separationFactor);
-
-		// alignment:
-		alignmentVec = alignmentVec.normalized().mul(alignmentFactor);
 
 		// calculate acceleration:
-		const acceleration = cohesionVec.add(alignmentVec).add(separationVec).normalized().mul(this.scene.initialVelocity);
+		const acceleration = cohesionVec.add(alignmentVec).add(separationVec).add(fearVec).normalized().mul(this.scene.initialVelocity);
 		this.velocity = this.velocity.add(acceleration);
 	}
 }
