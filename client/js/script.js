@@ -105,7 +105,7 @@ function onLogin () {
 	});
 
 	socket = new WebSocket('ws://' + window.location.host);
-	socket.onopen = () => {
+	socket.onopen = async () => {
 		socket.send(JSON.stringify({ playerID: -1, x: playerX, y: playerY, dx: 0, dy: 0, name: getUsername(), tint: getUserTint() }));
 	};
 
