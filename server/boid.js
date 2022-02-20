@@ -51,6 +51,7 @@ class Scene {
 	updatePlayer (id, _x, _y, _name, _tint) {
 		let playerID = -1;
 		// Client doesn't know what player it is
+		console.log(id);
 		if (id === -1) {
 			// Create player
 			this.players.push({ id: this.players.length, x: _x, y: _y, name: _name, tint: _tint });
