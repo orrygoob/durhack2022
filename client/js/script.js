@@ -55,7 +55,8 @@ document.addEventListener('DOMContentLoaded', () => {
 	document.getElementById('pixi-app').addEventListener('mousemove', (e) => {
 		if (socket !== null && playerID !== -1) {
 			const size = getSize();
-			socket.send(JSON.stringify({ playerID: playerID, x: e.offsetX / size, y: e.offsetY / size, name: getUsername(), tint: getUserTint() }));
+			const jsonData = JSON.stringify({ playerID: playerID, x: e.offsetX / size, y: e.offsetY / size, name: getUsername(), tint: getUserTint() });
+			socket.send(jsonData);
 		}
 	});
 });
@@ -82,6 +83,7 @@ function onLogin () {
 
 	socket = new WebSocket('ws://' + window.location.host);
 	socket.onopen = () => {
+		alert('A');
 		socket.send(JSON.stringify({ playerID: -1, x: 0, y: 0, name: getUsername(), tint: getUserTint() }));
 	};
 
@@ -95,6 +97,7 @@ function onLogin () {
 			if (playerID !== -1) {
 				updateBoids(jsonData.boids);
 				updatePlayers(jsonData.players);
+				console.log(jsonData.players);
 			}
 		}
 	};
@@ -195,6 +198,9 @@ function updateBoids (boidsData) {
 	const size = getSize();
 
 	boidsData.forEach((boid, index) => {
+		if (boid.x === undefined || boid.y === undefined || boid.dy === undefined || boid.dx === undefined || boid.tint === undefined) {
+			console.error('Undefined property of boid.');
+		}
 		boidSprites[index].x = (boid.x ?? 0) * size;
 		boidSprites[index].y = (boid.y ?? 0) * size;
 		boidSprites[index].angle = Math.atan2(boid.dy ?? 0, boid.dx ?? 0) * (180 / Math.PI) + 90;
@@ -216,11 +222,13 @@ function updatePlayers (playersData) {
 
 	const size = getSize();
 	playersData.forEach((player, index) => {
-		if (player.id !== playerID) {
-			playerSprites[index].x = (player.x ?? 0) * size;
-			playerSprites[index].y = (player.y ?? 0) * size;
+		if (player.x === undefined || player.y === undefined || player.tint === undefined) {
+			console.error('Undefined property of player.');
 		}
-		playerSprites[index].angle = Math.atan2(player.dy ?? 0, player.dx ?? 0) * (180 / Math.PI) + 90;
+		// if (player.id !== playerID) {
+		playerSprites[index].x = (player.x ?? 0) * size;
+		playerSprites[index].y = (player.y ?? 0) * size;
+		// }
 		playerSprites[index].tint = player.tint ?? 0xffffff;
 	});
 
