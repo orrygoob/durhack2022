@@ -54,7 +54,6 @@ class Scene {
 	updatePlayer (_playerID, _x, _y, _name, _tint) {
 		if (_playerID !== null && _playerID >= 0) {
 			let id = 0;
-		  let isNewPlayer = false;
 			while (this.players[id] !== null && id < this.players.length && _playerID !== this.players[id].id) id++;
 
 			if (this.players[id] !== null && _playerID === this.players[id].id) {
@@ -218,4 +217,4 @@ class Boid {
 	}
 }
 
-module.exports.Scene = Scene;
+module.exports = { Vector, Scene };
