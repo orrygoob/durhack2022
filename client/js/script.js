@@ -60,23 +60,8 @@ document.addEventListener('DOMContentLoaded', () => {
 		logout();
 	});
 
-	document.getElementById('pixi-app').addEventListener('mousemove', (e) => {
-		if (socket !== null && playerID !== -1) {
-			const size = getSize();
-
-			prevPlayerX.push(playerX);
-			prevPlayerY.push(playerY);
-
-			if (prevPlayerX.length >= 10) {
-				prevPlayerX.shift();
-			}
-			if (prevPlayerY.length >= 10) {
-				prevPlayerY.shift();
-			}
-
-			playerX = e.offsetX / size;
-			playerY = e.offsetY / size;
-		}
+	document.getElementById('body').addEventListener('onfocusout', () => {
+		logout();
 	});
 });
 
@@ -99,6 +84,25 @@ function onLogin () {
 	document.getElementById('logout-button').classList.remove('hidden');
 	app.view.id = 'pixi-app';
 	document.getElementById('flex-div').appendChild(app.view);
+
+	document.getElementById('pixi-app').addEventListener('mousemove', (e) => {
+		if (socket !== null && playerID !== -1) {
+			const size = getSize();
+
+			prevPlayerX.push(playerX);
+			prevPlayerY.push(playerY);
+
+			if (prevPlayerX.length >= 10) {
+				prevPlayerX.shift();
+			}
+			if (prevPlayerY.length >= 10) {
+				prevPlayerY.shift();
+			}
+
+			playerX = e.offsetX / size;
+			playerY = e.offsetY / size;
+		}
+	});
 
 	socket = new WebSocket('ws://' + window.location.host);
 	socket.onopen = () => {
