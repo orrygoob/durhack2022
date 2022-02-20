@@ -1,4 +1,5 @@
 /* global PIXI */
+'use strict';
 
 const app = new PIXI.Application({
 	autoResize: true,
