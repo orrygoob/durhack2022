@@ -149,13 +149,13 @@ function getUserTint () {
 }
 
 function registerBoidSprites (boidsData) {
-	boidSprites = {};
+	boidSprites = [];
 	boidsData.forEach((boid) => {
 		const boidSprite = new PIXI.Sprite(boidTexture);
 		boidSprite.width = 8;
 		boidSprite.height = 8;
 		boidSprite.anchor.set(0.5, 0.5);
-		boidSprites(boidSprite);
+		boidSprites.push(boidSprite);
 		boidSprite.tint = 0xff0000;
 		app.stage.addChild(boidSprite);
 	});

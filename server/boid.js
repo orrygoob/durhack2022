@@ -39,6 +39,7 @@ class Scene {
 	constructor (numBoids) {
 		this.boids = [];
 		this.players = [];
+		this.allTimePlayerCount = 0;
 		this.initialVelocity = 0.00001;
 
 		for (let i = 0; i < numBoids; i++) {
@@ -50,26 +51,28 @@ class Scene {
 	}
 
 	// Update player position, name and color. Return the player ID
-	updatePlayer (id, _x, _y, _name, _tint) {
-		let playerID = -1;
-		// Client doesn't know what player it is
-		if (id < 0 || id >= this.players.length) {
-			// Tell player who they are
-			playerID = this.players.length;
+	updatePlayer (_playerID, _x, _y, _name, _tint) {
+		if (_playerID >= 0) {
+			let id = 0;
+			while (id < this.players.length && _playerID !== this.players[id].id) id++;
 
-			// Create new player
-			this.players.push({ id: this.players.length, pos: new Vector(_x, _y), name: _name, tint: _tint, lastSeen: Date.now() });
-		} else {
-			playerID = id;
+			if (_playerID === this.players[id].id) {
+				this.players[id].pos.x = _x;
+				this.players[id].pos.y = _y;
+				this.players[id].tint = _tint;
+				this.players[id].name = _name;
+				this.players[id].lastSeen = Date.now();
 
-			this.players[id].pos.x = _x;
-			this.players[id].pos.y = _y;
-			this.players[id].tint = _tint;
-			this.players[id].name = _name;
-			this.players[id].lastSeen = Date.now();
+				return _playerID;
+			}
 		}
+		console.log('New Player: ' + (this.allTimePlayerCount + 1));
+		// Client doesn't know what player it is
+		this.allTimePlayerCount += 1;
+		// Create new player
+		this.players.push({ id: this.allTimePlayerCount, pos: new Vector(_x, _y), name: _name, tint: _tint, lastSeen: Date.now() });
 
-		return playerID;
+		return this.allTimePlayerCount;
 	}
 
 	registerBoid (boid) {
@@ -110,8 +113,11 @@ class Scene {
 		}
 
 		const playersArr = [];
+		const newPlayerArray = [];
 		for (const p in this.players) {
-			if (this.players[p] !== null && this.players[p].lastSeen > Date.now() - Config.game.playerTimeout) {
+			if (this.players[p].lastSeen > Date.now() - Config.game.playerTimeout) {
+				newPlayerArray.push(this.players[p]);
+
 				playersArr.push({
 					playerID: this.players[p].id,
 					x: this.players[p].pos.x,
@@ -119,11 +125,11 @@ class Scene {
 					name: this.players[p].name,
 					tint: this.players[p].tint
 				});
-			} else {
-				this.players[p] = null;
 			}
 		}
 
+		this.players = newPlayerArray;
+		console.log({ boids: boidsArr, players: playersArr });
 		return { boids: boidsArr, players: playersArr };
 	}
 }
