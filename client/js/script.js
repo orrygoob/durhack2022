@@ -174,7 +174,8 @@ function registerPlayerSprites (playersData) {
 		playerSprite.zIndex = 1;
 		playerSprite.scale.set(0.8);
 		playerSprite.anchor.set(0.5, 0.5);
-		playerSprites[player.id] = playerSprite;
+
+		playerSprites[player.playerID] = playerSprite;
 		playerSprite.tint = player.tint;
 		app.stage.addChild(playerSprite);
 
@@ -230,17 +231,16 @@ function updatePlayers (playersData) {
 	}
 
 	const size = getSize();
-	console.log(playersData);
 	playersData.forEach((player, index) => {
 		if (player.x === undefined || player.y === undefined || player.dy === undefined || player.dx === undefined || player.tint === undefined) {
-			console.error('Undefined property of player.');
+			// console.error('Undefined property of player.');
 		}
 		// if (player.id !== playerID) {
-		playerSprites[player.id].x = (player.x ?? 0) * size;
-		playerSprites[player.id].y = (player.y ?? 0) * size;
+		playerSprites[player.playerID].x = (player.x ?? 0) * size;
+		playerSprites[player.playerID].y = (player.y ?? 0) * size;
 		// }
-		playerSprites[player.id].angle = Math.atan2(player.dy ?? 0, player.dx ?? 0) * (180 / Math.PI) + 90;
-		playerSprites[player.id].tint = player.tint ?? 0xffffff;
+		playerSprites[player.playerID].angle = Math.atan2(player.dy ?? 0, player.dx ?? 0) * (180 / Math.PI) + 90;
+		playerSprites[player.playerID].tint = player.tint ?? 0xffffff;
 	});
 
 	cachedPlayersData = playersData;
