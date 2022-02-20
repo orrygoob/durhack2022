@@ -1,4 +1,5 @@
 const { Vector, Scene } = require('./boid');
+const shuffle = require('shuffle-array');
 
 class Game {
 	constructor (newLevelCallback) {
@@ -15,18 +16,28 @@ class Game {
 	}
 
 	startLevel (levelNo) {
+		const startZoneSize = 0.3;
+		const startPercentage = 0.25;
 		if (levelNo === 0) {
 			// test values for level 0:
-			this.zoneSize = 0.2;
+			this.zoneSize = startZoneSize;
 			this.zones = [this.zoneSize, 0, this.zoneSize, 0];
-			this.percentage = 0.1;
+			this.percentage = startPercentage;
 		} else {
-			console.log('WINNER!');
+			this.zoneSize = Math.max(startZoneSize - levelNo * 0.01, 0.1);
 
-			// TODO: this is an impossible game:
-			this.zoneSize = 0.3;
-			this.zones = [0, this.zoneSize, 0, 0];
-			this.percentage = 1;
+			this.zones = [0, 0, 0, 0];
+			const nZones = Math.random(Math.random() * 3) + 1;
+			for (let i = 0; i < 4; i++) {
+				if (i < nZones) {
+					this.zones[i] = this.zoneSize;
+				} else {
+					this.zones[i] = 0;
+				}
+			}
+			shuffle(this.zones);
+
+			this.percentage = Math.min(startPercentage + levelNo * 0.05, 0.85);
 		}
 
 		if (this.newLevelCallback) {
