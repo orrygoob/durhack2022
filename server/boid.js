@@ -54,11 +54,11 @@ class Scene {
 		let playerID = -1;
 		// Client doesn't know what player it is
 		if (id < 0 || id >= this.players.length) {
+			// Tell player who they are
+			playerID = this.players.length;
+
 			// Create new player
 			this.players.push({ id: this.players.length, pos: new Vector(_x, _y), name: _name, tint: _tint, lastSeen: Date.now() });
-
-			// Tell player who they are
-			playerID = this.players.length - 1;
 		} else {
 			playerID = id;
 
