@@ -2,5 +2,13 @@
     "editor.codeActionsOnSave": {
         "source.fixAll.eslint": true
     },
-    "eslint.validate": ["javascript"]
+    "eslint.validate": [
+        "javascript"
+    ],
+    "appService.zipIgnorePattern": [
+        "node_modules{,/**}",
+        ".vscode{,/**}"
+    ],
+    "appService.defaultWebAppToDeploy": "/subscriptions/27eabc96-aa00-46bf-86d3-efbbf2d933e8/resourceGroups/Sheepies_group/providers/Microsoft.Web/sites/Sheepies",
+    "appService.deploySubpath": "."
 }
