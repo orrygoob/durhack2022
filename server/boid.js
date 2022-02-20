@@ -61,7 +61,7 @@ class Scene {
 			playerID = this.players.length;
 		} else {
 			playerID = id;
-			this.players[id].id = id;
+
 			this.players[id].pos.x = _x;
 			this.players[id].pos.y = _y;
 			this.players[id].tint = _tint;
