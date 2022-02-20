@@ -5,7 +5,7 @@ import { Config } from './config.js';
 const app = new PIXI.Application({
 	autoResize: true,
 	resolution: devicePixelRatio,
-	backgroundColor: 0x1099bb
+	backgroundColor: 0x335533
 });
 
 app.stage.interactive = true;
@@ -90,7 +90,7 @@ function onLogin () {
 	document.getElementById('login').classList.add('hidden');
 	document.getElementById('logout-button').classList.remove('hidden');
 	app.view.id = 'pixi-app';
-	document.getElementById('flex-div').appendChild(app.view);
+	document.getElementById('wrapper').appendChild(app.view);
 
 	document.getElementById('pixi-app').addEventListener('mousemove', (e) => {
 		if (socket !== null && playerID !== -1) {
@@ -121,7 +121,7 @@ function onLogin () {
 		if (jsonData.boids === undefined && !jsonData.goalSet) {
 			playerID = jsonData.playerID;
 		} else if (jsonData.goalSet) {
-			console.log('data:', jsonData);
+			document.getElementById('level-counter').innerText = 'Level: ' + (jsonData.level + 1);
 
 			for (const zone of zoneObjects) {
 				app.stage.removeChild(zone);
@@ -131,11 +131,13 @@ function onLogin () {
 			for (let i = 0; i < jsonData.goalSet.length; i++) {
 				if (jsonData.goalSet[i]) {
 					const gr = new PIXI.Graphics();
-					gr.beginFill(0xff0000);
+					gr.beginFill(0x223322);
 					gr.drawCircle((i % 2) * getSize(), Math.floor(i / 2) * getSize(), jsonData.goalSet[i] * getSize());
 					gr.endFill();
+					gr.zIndex = -10;
 					zoneObjects.push(gr);
 					app.stage.addChild(gr);
+					app.stage.children.sort((itemA, itemB) => itemA.zIndex - itemB.zIndex);
 				}
 			}
 		} else {
@@ -174,7 +176,7 @@ function logout () {
 
 	document.getElementById('login').classList.remove('hidden');
 	document.getElementById('logout-button').classList.add('hidden');
-	document.getElementById('flex-div').removeChild(document.getElementById('pixi-app'));
+	document.getElementById('wrapper').removeChild(document.getElementById('pixi-app'));
 }
 
 function setUsername (username) {
