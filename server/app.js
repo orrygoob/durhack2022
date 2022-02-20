@@ -10,11 +10,10 @@ const myWebsocket = expressWs.getWss('/');
 
 app.ws('/', function(ws, req) {
     ws.onmessage = function(msg) {
-        console.log(msg);
-        //player = JSON.parse(msg);
+        player = JSON.parse(msg.data);
         // { id, x, y, name, tint }
-
-
+        console.log(player);
+        ws.send(JSON.stringify({ playerID: 2 }));
     };
 });
 
@@ -29,7 +28,7 @@ function intervalFunc() {
         ], 
         players: 
         [
-            { playerID: 1, x: 0, y: 0, name: "Orry", tint: 23 }
+            { playerID: 1, x: 0, y: 0, name: "Orry", tint: 10000000 }
         ] 
     };
     myWebsocket.clients.forEach(function (client) {

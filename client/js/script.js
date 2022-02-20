@@ -14,6 +14,11 @@ const app = new PIXI.Application({
 const boidTexture = PIXI.Texture.from('../assets/textures/triangle.png');
 
 let boidSprites = [];
+let playerSprites = [];
+let playerID = -1;
+
+let cachedPlayersData = null;
+let cachedBoidsData = null;
 
 document.addEventListener('DOMContentLoaded', () => {
 	previewTint();
@@ -65,12 +70,19 @@ function onLogin () {
 	app.view.id = 'pixi-app';
 	document.getElementById('flex-div').appendChild(app.view);
 
-	if ('WebSocketStream' in window) {
-		const socket = new WebSocket('ws://127.0.0.1');
-		socket.onmessage((message) => {
-			print(message);
-		});
-	}
+	const socket = new WebSocket('ws://127.0.0.1');
+	socket.onopen = () => {
+		socket.send(JSON.stringify({ playerID: -1, x: 0, y: 0, name: getUsername(), tint: getUserTint() }));
+	};
+	socket.onmessage = async (event) => {
+		const jsonData = JSON.parse(event.data);
+		if (jsonData.boids === undefined) {
+			playerID = jsonData.playerID;
+		} else {
+			updateBoids(jsonData.boids);
+			updatePlayers(jsonData.players);
+		}
+	};
 }
 
 function logout () {
@@ -117,12 +129,25 @@ function registerBoidSprites (boidsData) {
 	boidSprites = [];
 	boidsData.forEach((boid) => {
 		const boidSprite = new PIXI.Sprite(boidTexture);
-		boidSprite.width = 10;
-		boidSprite.height = 10;
+		boidSprite.width = 8;
+		boidSprite.height = 8;
 		boidSprite.anchor.set(0.5, 0.5);
 		boidSprites.push(boidSprite);
 		boidSprite.tint = 0xff0000;
 		app.stage.addChild(boidSprite);
+	});
+}
+
+function registerPlayerSprites (playersData) {
+	playerSprites = [];
+	playersData.forEach((player) => {
+		const playerSprite = new PIXI.Sprite(boidTexture);
+		playerSprite.width = 16;
+		playerSprite.height = 16;
+		playerSprite.anchor.set(0.5, 0.5);
+		playerSprites.push(playerSprite);
+		playerSprite.tint = player.tint;
+		app.stage.addChild(playerSprite);
 	});
 }
 
@@ -135,8 +160,12 @@ function clearStage () {
 
 function updateBoids (boidsData) {
 	if (boidsData.length !== boidSprites.length) {
+		// FIXME
 		clearStage();
 		registerBoidSprites(boidsData);
+		if (cachedPlayersData !== null) {
+			registerPlayerSprites(cachedPlayersData);
+		}
 	}
 
 	const size = getSize();
@@ -147,6 +176,29 @@ function updateBoids (boidsData) {
 		boidSprites[index].angle = Math.atan2(boid.dy ?? 0, boid.dx ?? 0) * (180 / Math.PI) + 90;
 		boidSprites[index].tint = boid.tint ?? 0xffffff;
 	});
+
+	cachedBoidsData = boidsData;
+}
+
+function updatePlayers (playersData) {
+	if (playersData.length !== playerSprites.length) {
+		// FIXME
+		clearStage();
+		registerPlayerSprites(playersData);
+		if (cachedBoidsData !== null) {
+			registerBoidSprites(cachedBoidsData);
+		}
+	}
+
+	const size = getSize();
+	playersData.forEach((player, index) => {
+		playerSprites[index].x = (player.x ?? 0) * size;
+		playerSprites[index].y = (player.y ?? 0) * size;
+		playerSprites[index].angle = Math.atan2(player.dy ?? 0, player.dx ?? 0) * (180 / Math.PI) + 90;
+		playerSprites[index].tint = player.tint ?? 0xffffff;
+	});
+
+	cachedPlayersData = playersData;
 }
 
 function getSize () {
@@ -174,7 +226,7 @@ app.ticker.add((delta) => {
 		tickerCallback(delta);
 	}
 });
-
+// updatePlayers([{ playerID: 0, x: 0.2, y: 0.2, tint: 0x00ff00, name: 'Hi' }]);
 // updateBoids([{ x: 30 / 100, y: 30 / 100, dx: -1, dy: -0.5, tint: 0xff0000 }, { x: 100 / 100, y: 100 / 100, dx: 0, dy: 0, tint: 0x00ff00 }]);
 
 export {
