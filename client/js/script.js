@@ -301,10 +301,10 @@ function updatePlayers (playersData) {
 			console.error('Undefined property of player.');
 			console.error(player);
 		}
-		// if (player.id !== playerID) {
-		playerSprites[player.playerID].x = (player.x ?? 0) * size;
-		playerSprites[player.playerID].y = (player.y ?? 0) * size;
-		// }
+		if (player.id !== playerID) {
+			playerSprites[player.playerID].x = (player.x ?? 0) * size;
+			playerSprites[player.playerID].y = (player.y ?? 0) * size;
+		}
 
 		playerSprites[player.playerID].children[0].angle = Math.atan2(player.dy ?? 0, player.dx ?? 0) * (180 / Math.PI) + 90;
 		playerSprites[player.playerID].tint = player.tint ?? 0xffffff;
@@ -328,7 +328,6 @@ function resize () {
 function interpolateBoids (delta) {
 	boidSprites.forEach((_, index) => {
 		const amount = 1000 * delta; // 18,000 is magic. Idk why it works.
-		console.log(cachedBoidsData[index].dx * amount);
 		boidSprites[index].x += cachedBoidsData[index].dx * amount;
 		boidSprites[index].y += cachedBoidsData[index].dy * amount;
 		boidSprites[index].tint = 0x00ff00;

@@ -60,15 +60,18 @@ canvas {
 }
 
 #logout-button {
-    margin: 1em;
+ margin-right: 1em;
 }
 
 #level-counter {
     float: right;
     color: white;
-    margin: 1em;
+    margin-right: 1em;
 }
 
 #top {
+    display: flex;
     position: absolute;
+    margin: 1em;
+    color: gray
 }
