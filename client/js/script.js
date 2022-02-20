@@ -301,7 +301,7 @@ function updatePlayers (playersData) {
 			console.error('Undefined property of player.');
 			console.error(player);
 		}
-		if (player.id !== playerID) {
+		if (player.playerID !== playerID) {
 			playerSprites[player.playerID].x = (player.x ?? 0) * size;
 			playerSprites[player.playerID].y = (player.y ?? 0) * size;
 		}
@@ -349,5 +349,10 @@ app.ticker.add((delta) => {
 
 		interpolateBoids(curTime - now);
 		now = curTime;
+	}
+
+	if (playerID !== -1 && playerSprites[playerID] !== undefined) {
+		playerSprites[playerID].x = playerX * getSize();
+		playerSprites[playerID].y = playerY * getSize();
 	}
 });
