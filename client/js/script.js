@@ -220,7 +220,7 @@ function updateBoids (boidsData) {
 }
 
 function updatePlayers (playersData) {
-	if (playersData.length !== Object.keys(playerSprites).length) {
+	if (Object.keys(playersData).length !== Object.keys(playerSprites).length) {
 		// FIXME
 		clearStage();
 		registerPlayerSprites(playersData);
