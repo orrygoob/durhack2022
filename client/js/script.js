@@ -66,7 +66,7 @@ function onLogin () {
 	app.view.id = 'pixi-app';
 	document.getElementById('flex-div').appendChild(app.view);
 
-	const socket = new WebSocket('ws://' + window.location.href);
+	const socket = new WebSocket('ws://' + window.location.host);
 	socket.onopen = () => {
 		socket.send(JSON.stringify({ playerID: -1, x: 0, y: 0, name: getUsername(), tint: getUserTint() }));
 	};
