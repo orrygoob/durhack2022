@@ -51,7 +51,6 @@ class Scene {
 	updatePlayer (id, _x, _y, _name, _tint) {
 		let playerID = -1;
 		// Client doesn't know what player it is
-		console.log(id);
 		if (id === -1) {
 			// Create player
 			this.players.push({ id: this.players.length, pos: new Vector(_x, _y), name: _name, tint: _tint });
@@ -60,7 +59,7 @@ class Scene {
 			playerID = this.players.length;
 		} else if (id >= this.players.length) { // Player is wrong about who they are (Array index error)
 			// Create new player
-			this.players.push({ id: this.players.length, x: _x, y: _y, name: _name, tint: _tint });
+			this.players.push({ id: this.players.length, pos: new Vector(_x, _y), name: _name, tint: _tint });
 
 			// Tell player who they are
 			playerID = this.players.length;
@@ -158,7 +157,7 @@ class Boid {
 		const cohesionFactor = 2;
 		const separationFactor = 1;
 		const alignmentFactor = 0.2;
-		const fearFactor = 0.03;
+		const fearFactor = 0.0;
 		const separationDistance = 0.05;
 
 		let cohesionVec = Vector.zero;
