@@ -78,4 +78,5 @@ canvas {
 
 p {
     pointer-events: none;
+    width : 16em;
 }
