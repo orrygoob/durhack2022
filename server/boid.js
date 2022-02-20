@@ -55,13 +55,13 @@ class Scene {
 		// Client doesn't know what player it is
 		if (id === -1) {
 			// Create player
-			this.players.push({ id: this.players.length, pos: new Vector(_x, _y), name: _name, tint: _tint });
+			this.players.push({ id: this.players.length, pos: new Vector(_x, _y), name: _name, tint: _tint, lastSeen: Date.now() });
 
 			// Tell player who they are
 			playerID = this.players.length;
 		} else if (id >= this.players.length) { // Player is wrong about who they are (Array index error)
 			// Create new player
-			this.players.push({ id: this.players.length, pos: new Vector(_x, _y), name: _name, tint: _tint });
+			this.players.push({ id: this.players.length, pos: new Vector(_x, _y), name: _name, tint: _tint, lastSeen: Date.now() });
 
 			// Tell player who they are
 			playerID = this.players.length;
@@ -70,6 +70,7 @@ class Scene {
 			this.players[id].pos.y = _y;
 			this.players[id].tint = _tint;
 			this.players[id].tint = _name;
+			this.players[id].lastSeen = Date.now();
 
 			playerID = id;
 		}
@@ -115,15 +116,23 @@ class Scene {
 		}
 
 		const playersArr = [];
+		const newPlayers = [];
 		for (const p of this.players) {
-			playersArr.push({
-				playerID: p.id,
-				x: p.x,
-				y: p.y,
-				name: p.name,
-				tint: p.tint
-			});
+			if (p.lastSeen > Date.now() - Config.game.playerTimeout) 
+			{
+				newPlayers.push(p);
+
+				playersArr.push({
+					playerID: p.id,
+					x: p.x,
+					y: p.y,
+					name: p.name,
+					tint: p.tint
+				});
+			}
 		}
+
+		this.players = newPlayers;
 
 		return { boids: boidsArr, players: playersArr };
 	}
