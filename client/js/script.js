@@ -331,7 +331,6 @@ function interpolateBoids (delta) {
 		console.log(cachedBoidsData[index].dx * amount);
 		boidSprites[index].x += cachedBoidsData[index].dx * amount;
 		boidSprites[index].y += cachedBoidsData[index].dy * amount;
-		boidSprites[index].tint = 0x00ff00;
 	});
 }
 
