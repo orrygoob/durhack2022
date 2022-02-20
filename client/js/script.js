@@ -63,12 +63,12 @@ document.addEventListener('DOMContentLoaded', () => {
 	document.getElementById('body').addEventListener('onfocusout', () => {
 		logout();
 	});
-	document.getElementById('pixi-app').addEventListener('mousemove', (e) => {
-		if (socket !== null && playerID !== -1) {
-			const size = getSize();
-			socket.send(JSON.stringify({ playerID: playerID, x: e.offsetX / size, y: e.offsetY / size, name: getUsername(), tint: getUserTint() }));
-		}
-	});
+	// document.getElementById('pixi-app').addEventListener('mousemove', (e) => {
+	// 	if (socket !== null && playerID !== -1) {
+	// 		const size = getSize();
+	// 		socket.send(JSON.stringify({ playerID: playerID, x: e.offsetX / size, y: e.offsetY / size, name: getUsername(), tint: getUserTint() }));
+	// 	}
+	// });
 });
 
 function previewTint () {
@@ -124,6 +124,12 @@ function onLogin () {
 				// Send on receive.
 				const dx = average(prevPlayerX) - playerX;
 				const dy = average(prevPlayerY) - playerY;
+				if (dx === undefined) {
+					alert('DX undefined. Report this to Amren.');
+				}
+				if (dy === undefined) {
+					alert('DY undefined. Report this to Amren.');
+				}
 
 				const jsonData2 = JSON.stringify({ playerID: playerID, x: playerX, y: playerY, dx: dx, dy: dy, name: getUsername(), tint: getUserTint() });
 				socket.send(jsonData2);
@@ -241,7 +247,7 @@ function updateBoids (boidsData) {
 	const size = getSize();
 
 	boidsData.forEach((boid, index) => {
-		if (boid.x === undefined || boid.y === undefined || boid.dy === undefined || boid.dx === undefined || boid.tint === undefined) {
+		if (boid.x === undefined || boid.y === undefined || boid.dy === undefined || boid.dx === undefined) {
 			console.error('Undefined property of boid.');
 		}
 		boidSprites[index].x = (boid.x ?? 0) * size;
@@ -267,6 +273,7 @@ function updatePlayers (playersData) {
 	playersData.forEach((player, index) => {
 		if (player.x === undefined || player.y === undefined || player.dy === undefined || player.dx === undefined || player.tint === undefined) {
 			console.error('Undefined property of player.');
+			console.error(player);
 		}
 		// if (player.id !== playerID) {
 		playerSprites[player.playerID].x = (player.x ?? 0) * size;
