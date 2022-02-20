@@ -129,7 +129,7 @@ class Scene {
 		}
 
 		this.players = newPlayerArray;
-		console.log({ boids: boidsArr, players: playersArr });
+
 		return { boids: boidsArr, players: playersArr };
 	}
 }
