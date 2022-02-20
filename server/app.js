@@ -19,7 +19,7 @@ app.ws('/', function (ws, req) {
 
 	ws.onmessage = function (msg) {
 		const player = JSON.parse(msg.data);
-		const ret = game.scene.updatePlayer(player.playerID, player.x, player.y, player.name, player.tint);
+		const ret = game.scene.updatePlayer(player.playerID, player.x, player.y, player.dx, player.dy, player.name, player.tint);
 		if (ret[1]) { // isNewPlayer
 			ws.send(JSON.stringify({ playerID: ret[0] /* playerID */ }));
 		}

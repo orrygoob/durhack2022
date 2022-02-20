@@ -51,7 +51,7 @@ class Scene {
 	}
 
 	// Update player position, name and color. Return the player ID
-	updatePlayer (_playerID, _x, _y, _name, _tint) {
+	updatePlayer (_playerID, _x, _y, _dx, _dy, _name, _tint) {
 		if (_playerID !== null && _playerID >= 0) {
 			let id = 0;
 			while (this.players[id] !== null && id < this.players.length && _playerID !== this.players[id].id) id++;
@@ -59,6 +59,8 @@ class Scene {
 			if (this.players[id] !== null && _playerID === this.players[id].id) {
 				this.players[id].pos.x = _x;
 				this.players[id].pos.y = _y;
+				this.players[id].pos.x = _dx;
+				this.players[id].pos.y = _dy;
 				this.players[id].tint = _tint;
 				this.players[id].name = _name;
 				this.players[id].lastSeen = Date.now();
@@ -70,7 +72,7 @@ class Scene {
 		// Client doesn't know what player it is
 		this.allTimePlayerCount += 1;
 		// Create new player
-		this.players.push({ id: this.allTimePlayerCount, pos: new Vector(_x, _y), name: _name, tint: _tint, lastSeen: Date.now() });
+		this.players.push({ id: this.allTimePlayerCount, pos: new Vector(_x, _y), vel: new Vector(_dx, _dy), name: _name, tint: _tint, lastSeen: Date.now() });
 
 		return [this.allTimePlayerCount, true];
 	}
@@ -122,6 +124,8 @@ class Scene {
 					playerID: this.players[p].id,
 					x: this.players[p].pos.x,
 					y: this.players[p].pos.y,
+					dx: this.players[p].vel.x,
+					dy: this.players[p].vel.y,
 					name: this.players[p].name,
 					tint: this.players[p].tint
 				});
