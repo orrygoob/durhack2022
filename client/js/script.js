@@ -328,6 +328,7 @@ function resize () {
 function interpolateBoids (delta) {
 	boidSprites.forEach((_, index) => {
 		const amount = 1000 * delta; // 18,000 is magic. Idk why it works.
+		console.log(cachedBoidsData[index].dx * amount);
 		boidSprites[index].x += cachedBoidsData[index].dx * amount;
 		boidSprites[index].y += cachedBoidsData[index].dy * amount;
 		boidSprites[index].tint = 0x00ff00;
@@ -345,9 +346,10 @@ function setTickerCallback (callback) {
 let now = performance.now();
 
 app.ticker.add((delta) => {
-	if (Config.interpolate) {
+	if (Config.interpolation) {
 		const curTime = performance.now();
-		now = curTime;
+
 		interpolateBoids(curTime - now);
+		now = curTime;
 	}
 });
