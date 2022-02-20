@@ -11,6 +11,8 @@ app.use(express.static('client'));
 const myWebsocket = expressWs.getWss('/');
 
 const game = new Game(levelChangeCallback);
+let currentLevelGoals = [0, 0, 0, 0];
+let currentLevel = 0;
 
 app.ws('/', function (ws, req) {
 	if (!game.started) {
@@ -22,6 +24,7 @@ app.ws('/', function (ws, req) {
 		const ret = game.scene.updatePlayer(player.playerID, player.x, player.y, player.dx, player.dy, player.name, player.tint);
 		if (ret[1]) { // isNewPlayer
 			ws.send(JSON.stringify({ playerID: ret[0] /* playerID */ }));
+			ws.send(JSON.stringify({ level: currentLevel, goalSet: currentLevelGoals }));
 		}
 	};
 });
@@ -39,9 +42,11 @@ function intervalFunc () {
 	}
 }
 
-function levelChangeCallback (goalDescriptors) {
+function levelChangeCallback (goalDescriptors, levelNumber) {
+	currentLevel = levelNumber;
+	currentLevelGoals = goalDescriptors;
 	myWebsocket.clients.forEach(function (client) {
-		client.send(JSON.stringify({ goalSet: goalDescriptors }));
+		client.send(JSON.stringify({ level: levelNumber, goalSet: goalDescriptors }));
 	});
 }
 
