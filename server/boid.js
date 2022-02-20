@@ -59,8 +59,8 @@ class Scene {
 			if (this.players[id] !== null && _playerID === this.players[id].id) {
 				this.players[id].pos.x = _x;
 				this.players[id].pos.y = _y;
-				this.players[id].pos.x = _dx;
-				this.players[id].pos.y = _dy;
+				this.players[id].vel.x = _dx;
+				this.players[id].vel.y = _dy;
 				this.players[id].tint = _tint;
 				this.players[id].name = _name;
 				this.players[id].lastSeen = Date.now();
