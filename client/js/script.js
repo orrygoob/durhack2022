@@ -24,8 +24,8 @@ let socket = null;
 let cachedUsername = '';
 let cachedTint = '';
 
-let playerX = 0;
-let playerY = 0;
+let playerX = -1;
+let playerY = -1;
 
 document.addEventListener('DOMContentLoaded', () => {
 	previewTint();
@@ -87,7 +87,7 @@ function onLogin () {
 
 	socket = new WebSocket('ws://' + window.location.host);
 	socket.onopen = () => {
-		socket.send(JSON.stringify({ playerID: -1, x: 0, y: 0, name: getUsername(), tint: getUserTint() }));
+		socket.send(JSON.stringify({ playerID: -1, x: playerX, y: playerY, name: getUsername(), tint: getUserTint() }));
 	};
 
 	socket.onmessage = async (event) => {
@@ -172,9 +172,11 @@ function registerPlayerSprites (playersData) {
 		playerSprite.tint = player.tint;
 		app.stage.addChild(playerSprite);
 
-		const text = new PIXI.Text('Basic text in pixi');
+		const text = new PIXI.Text(player.name);
+		text.anchor.set(0.5, 0.5);
+		text.style.fontSize = 8;
+		text.y = 10;
 		playerSprite.addChild(text);
-		text.y = 20;
 	});
 }
 
