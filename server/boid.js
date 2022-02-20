@@ -53,26 +53,20 @@ class Scene {
 	updatePlayer (id, _x, _y, _name, _tint) {
 		let playerID = -1;
 		// Client doesn't know what player it is
-		if (id === -1) {
-			// Create player
-			this.players.push({ id: this.players.length, pos: new Vector(_x, _y), name: _name, tint: _tint, lastSeen: Date.now() });
-
-			// Tell player who they are
-			playerID = this.players.length;
-		} else if (id >= this.players.length) { // Player is wrong about who they are (Array index error)
+		if (id < 0 || id >= this.players.length) {
 			// Create new player
 			this.players.push({ id: this.players.length, pos: new Vector(_x, _y), name: _name, tint: _tint, lastSeen: Date.now() });
 
 			// Tell player who they are
 			playerID = this.players.length;
 		} else {
+			playerID = id;
+			this.players[id].id = id;
 			this.players[id].pos.x = _x;
 			this.players[id].pos.y = _y;
 			this.players[id].tint = _tint;
-			this.players[id].tint = _name;
+			this.players[id].name = _name;
 			this.players[id].lastSeen = Date.now();
-
-			playerID = id;
 		}
 
 		return playerID;
@@ -123,8 +117,8 @@ class Scene {
 
 				playersArr.push({
 					playerID: p.id,
-					x: p.x,
-					y: p.y,
+					x: p.pos.x,
+					y: p.pos.y,
 					name: p.name,
 					tint: p.tint
 				});
