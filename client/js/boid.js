@@ -41,11 +41,7 @@ class Scene {
 		this.initialVelocity = 0.0001;
 
 		for (let i = 0; i < numBoids; i++) {
-			let pos = new Vector(Math.random() * screenWidth, Math.random() * screenHeight);
-
-			// DEBUG
-			pos = pos.mul(0.5).add(new Vector(0.25, 0.25));
-
+			const pos = new Vector(Math.random() * screenWidth, Math.random() * screenHeight);
 			const vel = new Vector(Math.random() * 2 - 1, Math.random() * 2 - 1).normalized().mul(this.initialVelocity);
 			const b = new Boid(pos, vel);
 			this.registerBoid(b);
@@ -140,11 +136,19 @@ class Boid {
 	}
 
 	tick (delta) {
+		// bounce off walls:
+		if ((this.pos.x <= 0 && this.velocity.x < 0) || (this.pos.x >= 1 && this.velocity.x > 0)) {
+			this.velocity.x *= -0.5;
+		}
+		if ((this.pos.y <= 0 && this.velocity.y < 0) || (this.pos.y >= 1 && this.velocity.y > 0)) {
+			this.velocity.y *= -0.5;
+		}
+
 		this.pos = this.pos.add(this.velocity.mul(delta));
 
-		const cohesionFactor = 1.0;
-		const separationFactor = 1.0;
-		const alignmentFactor = 0.1;
+		const cohesionFactor = 2;
+		const separationFactor = 1;
+		const alignmentFactor = 0.2;
 
 		const separationDistance = 0.05;
 
