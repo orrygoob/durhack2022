@@ -13,7 +13,7 @@ app.stage.interactive = true;
 const boidTexture = PIXI.Texture.from('../assets/textures/triangle.png');
 
 let boidSprites = [];
-let playerSprites = [];
+let playerSprites = {};
 let playerID = -1;
 
 let cachedPlayersData = null;
@@ -149,26 +149,26 @@ function getUserTint () {
 }
 
 function registerBoidSprites (boidsData) {
-	boidSprites = [];
+	boidSprites = {};
 	boidsData.forEach((boid) => {
 		const boidSprite = new PIXI.Sprite(boidTexture);
 		boidSprite.width = 8;
 		boidSprite.height = 8;
 		boidSprite.anchor.set(0.5, 0.5);
-		boidSprites.push(boidSprite);
+		boidSprites(boidSprite);
 		boidSprite.tint = 0xff0000;
 		app.stage.addChild(boidSprite);
 	});
 }
 
 function registerPlayerSprites (playersData) {
-	playerSprites = [];
+	playerSprites = {};
 	playersData.forEach((player) => {
 		const playerSprite = new PIXI.Sprite(boidTexture);
 		playerSprite.width = 16;
 		playerSprite.height = 16;
 		playerSprite.anchor.set(0.5, 0.5);
-		playerSprites.push(playerSprite);
+		playerSprites[player.id] = playerSprite;
 		playerSprite.tint = player.tint;
 		app.stage.addChild(playerSprite);
 
@@ -223,15 +223,15 @@ function updatePlayers (playersData) {
 	}
 
 	const size = getSize();
-	playersData.forEach((player, index) => {
+	playersData.forEach((player) => {
 		if (player.x === undefined || player.y === undefined || player.tint === undefined) {
 			console.error('Undefined property of player.');
 		}
 		// if (player.id !== playerID) {
-		playerSprites[index].x = (player.x ?? 0) * size;
-		playerSprites[index].y = (player.y ?? 0) * size;
+		playerSprites[player.id].x = (player.x ?? 0) * size;
+		playerSprites[player.id].y = (player.y ?? 0) * size;
 		// }
-		playerSprites[index].tint = player.tint ?? 0xffffff;
+		playerSprites[player.id].tint = player.tint ?? 0xffffff;
 	});
 
 	cachedPlayersData = playersData;
