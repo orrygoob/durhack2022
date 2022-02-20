@@ -1,4 +1,5 @@
 const { Vector, Scene } = require('./boid');
+const { Config } = require('./config');
 const shuffle = require('shuffle-array');
 
 class Game {
@@ -9,7 +10,7 @@ class Game {
 	}
 
 	start () {
-		this.scene = new Scene(200);
+		this.scene = new Scene(Config.boids.count);
 		this.started = true;
 		this.levelNo = 0;
 		this.startLevel(this.levelNo);

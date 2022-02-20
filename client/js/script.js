@@ -330,7 +330,6 @@ function interpolateBoids (delta) {
 		const amount = 1000 * delta; // 18,000 is magic. Idk why it works.
 		boidSprites[index].x += cachedBoidsData[index].dx * amount;
 		boidSprites[index].y += cachedBoidsData[index].dy * amount;
-		boidSprites[index].tint = 0x00ff00;
 	});
 }
 
