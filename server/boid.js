@@ -172,6 +172,8 @@ class Boid {
 
 		// fear:
 		for (const player of this.scene.players) {
+			if (!player) continue;
+
 			let pointDeltaVec = this.pos.sub(player.pos);
 			const dist = pointDeltaVec.magnitude;
 			pointDeltaVec = pointDeltaVec.normalized().mul(fearFactor / dist ** 2);
