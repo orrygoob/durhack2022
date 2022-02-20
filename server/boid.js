@@ -110,22 +110,20 @@ class Scene {
 		}
 
 		const playersArr = [];
-		const newPlayers = [];
-		for (const p of this.players) {
-			// if (p.lastSeen > Date.now() - Config.game.playerTimeout) {
-			newPlayers.push(p);
-
-			playersArr.push({
-				playerID: p.id,
-				x: p.pos.x,
-				y: p.pos.y,
-				name: p.name,
-				tint: p.tint
-			});
-			// }
+		for (const p in this.players) {
+			if (this.players[p] !== null && this.players[p].lastSeen > Date.now() - Config.game.playerTimeout) {
+				playersArr.push({
+					playerID: this.players[p].id,
+					x: this.players[p].pos.x,
+					y: this.players[p].pos.y,
+					name: this.players[p].name,
+					tint: this.players[p].tint
+				});
+			} else {
+				this.players[p] = null;
+			}
 		}
 
-		this.players = newPlayers;
 		return { boids: boidsArr, players: playersArr };
 	}
 }
