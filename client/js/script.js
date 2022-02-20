@@ -1,10 +1,5 @@
 /* global PIXI */
 
-const players = [
-	{ id: 0, name: 'Alice', x: 200, y: 0 },
-	{ id: 1, name: 'Bob', x: 300, y: 200 }
-];
-
 const app = new PIXI.Application({
 	autoResize: true,
 	resolution: devicePixelRatio,
@@ -79,8 +74,10 @@ function onLogin () {
 		if (jsonData.boids === undefined) {
 			playerID = jsonData.playerID;
 		} else {
-			updateBoids(jsonData.boids);
-			updatePlayers(jsonData.players);
+			if (playerID !== -1) {
+				updateBoids(jsonData.boids);
+				updatePlayers(jsonData.players);
+			}
 		}
 	};
 }
@@ -102,7 +99,7 @@ function setUsername (username) {
 	}
 }
 
-function getUsername (username) {
+function getUsername () {
 	return localStorage.getItem('username');
 }
 
@@ -114,7 +111,7 @@ function setUserTint (tint) {
 	}
 }
 
-function getUserTint (tint) {
+function getUserTint () {
 	return localStorage.getItem('tint');
 }
 
@@ -213,24 +210,32 @@ function resize () {
 	app.renderer.resize(size, size);
 }
 
+function interpolateBoids (delta) {
+	boidSprites.forEach((_, index) => {
+		boidSprites[index].x += cachedBoidsData[index].dx * delta;
+		boidSprites[index].y += cachedBoidsData[index].dy * delta;
+	});
+}
+
 resize();
 
-let tickerCallback = null;
+/* let tickerCallback = null;
 
 function setTickerCallback (callback) {
 	tickerCallback = callback;
-}
+} */
 
 app.ticker.add((delta) => {
-	if (tickerCallback) {
-		tickerCallback(delta);
-	}
+	interpolateBoids(delta);
+	// if (tickerCallback) {
+	// 	tickerCallback(delta);
+	// }
 });
 // updatePlayers([{ playerID: 0, x: 0.2, y: 0.2, tint: 0x00ff00, name: 'Hi' }]);
 // updateBoids([{ x: 30 / 100, y: 30 / 100, dx: -1, dy: -0.5, tint: 0xff0000 }, { x: 100 / 100, y: 100 / 100, dx: 0, dy: 0, tint: 0x00ff00 }]);
 
-export {
+/* export {
 	updateBoids,
 	setTickerCallback,
 	setBoidSize
-};
+}; */
