@@ -14,7 +14,7 @@ const boidTexture = PIXI.Texture.from('../assets/textures/sheep_from_above_low_r
 const playerTexture = PIXI.Texture.from('../assets/textures/dog_low_res.png');
 
 let boidSprites = [];
-let playerSprites = [];
+let playerSprites = {};
 let playerID = -1;
 
 let cachedPlayersData = null;
@@ -166,7 +166,7 @@ function registerBoidSprites (boidsData) {
 }
 
 function registerPlayerSprites (playersData) {
-	playerSprites = [];
+	playerSprites = {};
 	playersData.forEach((player) => {
 		const playerSprite = new PIXI.Sprite(playerTexture);
 		playerSprite.width = 260;
@@ -174,7 +174,8 @@ function registerPlayerSprites (playersData) {
 		playerSprite.zIndex = 1;
 		playerSprite.scale.set(0.8);
 		playerSprite.anchor.set(0.5, 0.5);
-		playerSprites.push(playerSprite);
+
+		playerSprites[player.playerID] = playerSprite;
 		playerSprite.tint = player.tint;
 		app.stage.addChild(playerSprite);
 
@@ -220,7 +221,7 @@ function updateBoids (boidsData) {
 }
 
 function updatePlayers (playersData) {
-	if (playersData.length !== playerSprites.length) {
+	if (Object.keys(playersData).length !== Object.keys(playerSprites).length) {
 		// FIXME
 		clearStage();
 		registerPlayerSprites(playersData);
@@ -232,14 +233,14 @@ function updatePlayers (playersData) {
 	const size = getSize();
 	playersData.forEach((player, index) => {
 		if (player.x === undefined || player.y === undefined || player.dy === undefined || player.dx === undefined || player.tint === undefined) {
-			console.error('Undefined property of player.');
+			// console.error('Undefined property of player.');
 		}
 		// if (player.id !== playerID) {
-		playerSprites[index].x = (player.x ?? 0) * size;
-		playerSprites[index].y = (player.y ?? 0) * size;
+		playerSprites[player.playerID].x = (player.x ?? 0) * size;
+		playerSprites[player.playerID].y = (player.y ?? 0) * size;
 		// }
-		playerSprites[index].angle = Math.atan2(player.dy ?? 0, player.dx ?? 0) * (180 / Math.PI) + 90;
-		playerSprites[index].tint = player.tint ?? 0xffffff;
+		playerSprites[player.playerID].angle = Math.atan2(player.dy ?? 0, player.dx ?? 0) * (180 / Math.PI) + 90;
+		playerSprites[player.playerID].tint = player.tint ?? 0xffffff;
 	});
 
 	cachedPlayersData = playersData;
