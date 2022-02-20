@@ -98,10 +98,10 @@ function onLogin () {
 			prevPlayerX.push(playerX);
 			prevPlayerY.push(playerY);
 
-			if (prevPlayerX.length >= 10) {
+			if (prevPlayerX.length >= 20) {
 				prevPlayerX.shift();
 			}
-			if (prevPlayerY.length >= 10) {
+			if (prevPlayerY.length >= 20) {
 				prevPlayerY.shift();
 			}
 
@@ -207,22 +207,25 @@ function registerBoidSprites (boidsData) {
 function registerPlayerSprites (playersData) {
 	playerSprites = {};
 	playersData.forEach((player) => {
-		const playerSprite = new PIXI.Sprite(playerTexture);
-		playerSprite.width = 260;
-		playerSprite.height = 420;
-		playerSprite.zIndex = 1;
-		playerSprite.scale.set(0.8);
-		playerSprite.anchor.set(0.5, 0.5);
+		const playerSprite = new PIXI.Container();
+		const playerTex = new PIXI.Sprite(playerTexture);
+		playerTex.width = 260;
+		playerTex.height = 420;
+		playerTex.scale.set(0.8);
+		playerTex.anchor.set(0.5, 0.5);
+
+		playerSprite.addChild(playerTex);
 
 		playerSprites[player.playerID] = playerSprite;
-		playerSprite.tint = player.tint;
+		playerTex.tint = player.tint;
 		app.stage.addChild(playerSprite);
 
 		const text = new PIXI.Text(player.name);
 		text.anchor.set(0.5, 0.5);
-		text.style.fontSize = 8;
+		text.style.fontSize = 16;
+		text.style.fill = 0xffffff;
 		text.resolution = 4;
-		text.y = 10;
+		// text.y = 60;
 		playerSprite.addChild(text);
 	});
 }
@@ -280,7 +283,7 @@ function updatePlayers (playersData) {
 		playerSprites[player.playerID].y = (player.y ?? 0) * size;
 		// }
 
-		playerSprites[player.playerID].angle = Math.atan2(player.dy ?? 0, player.dx ?? 0) * (180 / Math.PI) + 90;
+		playerSprites[player.playerID].children[0].angle = Math.atan2(player.dy ?? 0, player.dx ?? 0) * (180 / Math.PI) + 90;
 		playerSprites[player.playerID].tint = player.tint ?? 0xffffff;
 	});
 
