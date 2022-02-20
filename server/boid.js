@@ -52,6 +52,7 @@ class Scene {
 	// Update player position, name and color. Return the player ID
 	updatePlayer (id, _x, _y, _name, _tint) {
 		let playerID = -1;
+		let isNewPlayer = false;
 		// Client doesn't know what player it is
 		if (id < 0 || id >= this.players.length) {
 			// Tell player who they are
@@ -59,6 +60,7 @@ class Scene {
 
 			// Create new player
 			this.players.push({ id: this.players.length, pos: new Vector(_x, _y), name: _name, tint: _tint, lastSeen: Date.now() });
+			isNewPlayer = true;
 		} else {
 			playerID = id;
 
@@ -69,7 +71,7 @@ class Scene {
 			this.players[id].lastSeen = Date.now();
 		}
 
-		return playerID;
+		return [playerID, isNewPlayer];
 	}
 
 	registerBoid (boid) {
