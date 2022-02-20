@@ -66,12 +66,11 @@ function onLogin () {
 	app.view.id = 'pixi-app';
 	document.getElementById('flex-div').appendChild(app.view);
 
-	const socket = new WebSocket('ws://' + window.location.host);
-	socket.onopen = () => {
-		socket.send(JSON.stringify({ playerID: -1, x: 0, y: 0, name: getUsername(), tint: getUserTint() }));
-	};
-	socket.onmessage = async (event) => {
-		const jsonData = JSON.parse(event.data);
+	var socket = io();
+	socket.emit('update player', JSON.stringify({ playerID: -1, x: 0, y: 0, name: getUsername(), tint: getUserTint() }));
+
+	socket.on('chat message', function(msg) {
+		const jsonData = JSON.parse(msg);
 		if (jsonData.boids === undefined) {
 			playerID = jsonData.playerID;
 		} else {
@@ -80,7 +79,7 @@ function onLogin () {
 				updatePlayers(jsonData.players);
 			}
 		}
-	};
+	});
 }
 
 function logout () {
