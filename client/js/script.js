@@ -10,7 +10,8 @@ const app = new PIXI.Application({
 
 app.stage.interactive = true;
 
-const boidTexture = PIXI.Texture.from('../assets/textures/triangle.png');
+const boidTexture = PIXI.Texture.from('../assets/textures/sheep_from_above_low_res.png');
+const playerTexture = PIXI.Texture.from('../assets/textures/dog_low_res.png');
 
 let boidSprites = [];
 let playerSprites = [];
@@ -87,7 +88,7 @@ function onLogin () {
 
 	socket = new WebSocket('ws://' + window.location.host);
 	socket.onopen = () => {
-		socket.send(JSON.stringify({ playerID: -1, x: playerX, y: playerY, name: getUsername(), tint: getUserTint() }));
+		socket.send(JSON.stringify({ playerID: -1, x: playerX, y: playerY, dx: 0, dy: 0, name: getUsername(), tint: getUserTint() }));
 	};
 
 	socket.onmessage = async (event) => {
@@ -100,7 +101,9 @@ function onLogin () {
 				updatePlayers(jsonData.players);
 
 				// Send on receive.
-				const jsonData2 = JSON.stringify({ playerID: playerID, x: playerX, y: playerY, name: getUsername(), tint: getUserTint() });
+				const dx = playerX - cachedPlayersData[playerID].x;
+				const dy = playerY - cachedPlayersData[playerID].y;
+				const jsonData2 = JSON.stringify({ playerID: playerID, x: playerX, y: playerY, dx: dx, dy: dy, name: getUsername(), tint: getUserTint() });
 				socket.send(jsonData2);
 			}
 		}
@@ -152,9 +155,10 @@ function registerBoidSprites (boidsData) {
 	boidSprites = [];
 	boidsData.forEach((boid) => {
 		const boidSprite = new PIXI.Sprite(boidTexture);
-		boidSprite.width = 8;
-		boidSprite.height = 8;
+		boidSprite.width = 64;
+		boidSprite.height = 111;
 		boidSprite.anchor.set(0.5, 0.5);
+		boidSprite.scale.set(0.3);
 		boidSprites.push(boidSprite);
 		boidSprite.tint = 0xff0000;
 		app.stage.addChild(boidSprite);
@@ -164,9 +168,11 @@ function registerBoidSprites (boidsData) {
 function registerPlayerSprites (playersData) {
 	playerSprites = [];
 	playersData.forEach((player) => {
-		const playerSprite = new PIXI.Sprite(boidTexture);
-		playerSprite.width = 16;
-		playerSprite.height = 16;
+		const playerSprite = new PIXI.Sprite(playerTexture);
+		playerSprite.width = 260;
+		playerSprite.height = 420;
+		playerSprite.zIndex = 1;
+		playerSprite.scale.set(0.8);
 		playerSprite.anchor.set(0.5, 0.5);
 		playerSprites.push(playerSprite);
 		playerSprite.tint = player.tint;
@@ -175,6 +181,7 @@ function registerPlayerSprites (playersData) {
 		const text = new PIXI.Text(player.name);
 		text.anchor.set(0.5, 0.5);
 		text.style.fontSize = 8;
+		text.resolution = 4;
 		text.y = 10;
 		playerSprite.addChild(text);
 	});
@@ -224,13 +231,14 @@ function updatePlayers (playersData) {
 
 	const size = getSize();
 	playersData.forEach((player, index) => {
-		if (player.x === undefined || player.y === undefined || player.tint === undefined) {
+		if (player.x === undefined || player.y === undefined || player.dy === undefined || player.dx === undefined || player.tint === undefined) {
 			console.error('Undefined property of player.');
 		}
 		// if (player.id !== playerID) {
 		playerSprites[index].x = (player.x ?? 0) * size;
 		playerSprites[index].y = (player.y ?? 0) * size;
 		// }
+		playerSprites[index].angle = Math.atan2(player.dy ?? 0, player.dx ?? 0) * (180 / Math.PI) + 90;
 		playerSprites[index].tint = player.tint ?? 0xffffff;
 	});
 
