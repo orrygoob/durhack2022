@@ -63,6 +63,12 @@ document.addEventListener('DOMContentLoaded', () => {
 	document.getElementById('body').addEventListener('onfocusout', () => {
 		logout();
 	});
+	document.getElementById('pixi-app').addEventListener('mousemove', (e) => {
+		if (socket !== null && playerID !== -1) {
+			const size = getSize();
+			socket.send(JSON.stringify({ playerID: playerID, x: e.offsetX / size, y: e.offsetY / size, name: getUsername(), tint: getUserTint() }));
+		}
+	});
 });
 
 function previewTint () {
@@ -311,24 +317,4 @@ app.ticker.add((delta) => {
 		now = curTime;
 		interpolateBoids(curTime - now);
 	}
-
-	if (socket !== null && playerID !== -1) {
-		/* app.stage.on('mousemove', (event) => {
-			const mousePos = event.data.global;
-			const size = getSize();
-			socket.send(JSON.stringify({ playerID: playerID, x: mousePos.x / size, y: mousePos.y / size, name: getUsername(), tint: getUserTint() }));
-		}); */
-	}
-
-	// if (tickerCallback) {
-	// 	tickerCallback(delta);
-	// }
 });
-// updatePlayers([{ playerID: 0, x: 0.2, y: 0.2, tint: 0x00ff00, name: 'Hi' }]);
-// updateBoids([{ x: 30 / 100, y: 30 / 100, dx: -1, dy: -0.5, tint: 0xff0000 }, { x: 100 / 100, y: 100 / 100, dx: 0, dy: 0, tint: 0x00ff00 }]);
-
-/* export {
-	updateBoids,
-	setTickerCallback,
-	setBoidSize
-}; */
