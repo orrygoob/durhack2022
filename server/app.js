@@ -33,7 +33,7 @@ function intervalFunc () {
 	if (game.started) {
 		game.tick(delta);
 		const json = game.scene.getJSON();
-		myWebsocket.clients.forEach(function (client) {
+		myWebsocket.clients.forEach(async function (client) {
 			client.send(JSON.stringify(json));
 		});
 	}

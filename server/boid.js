@@ -108,8 +108,7 @@ class Scene {
 				x: b.pos.x,
 				y: b.pos.y,
 				dx: b.velocity.x,
-				dy: b.velocity.y,
-				tint: b.tint
+				dy: b.velocity.y
 			});
 		}
 
@@ -141,7 +140,6 @@ class Boid {
 	constructor (pos, velocity) {
 		this.pos = pos;
 		this.velocity = velocity;
-		this.tint = 0xFFFFFF;
 	}
 
 	get rotation () {
