@@ -1,5 +1,6 @@
 const express = require('express');
 let expressWs = require('express-ws');
+const { Config } = require('./config');
 const { Scene } = require('./boid');
 
 expressWs = expressWs(express());
@@ -21,7 +22,7 @@ app.ws('/', function (ws, req) {
 });
 
 function intervalFunc () {
-	myScene.tick(200);
+	myScene.tick(Config.server.tick);
 	const json = myScene.getJSON();
 	/* const json = {
         boids: [
@@ -40,6 +41,6 @@ function intervalFunc () {
 	});
 }
 
-setInterval(intervalFunc, 200);
+setInterval(intervalFunc, Config.server.tick);
 
 module.exports = app;

@@ -1,5 +1,7 @@
 'use strict';
 
+const { Config } = require('./config');
+
 class Vector {
 	constructor (x, y) {
 		this.x = x;
@@ -154,11 +156,11 @@ class Boid {
 		this.pos = this.pos.add(this.velocity.mul(delta));
 
 		// parameters:
-		const cohesionFactor = 2;
-		const separationFactor = 1;
-		const alignmentFactor = 0.2;
-		const fearFactor = 0.0;
-		const separationDistance = 0.05;
+		const cohesionFactor = Config.boids.cohesionFactor;
+		const separationFactor = Config.boids.separationFactor;
+		const alignmentFactor = Config.boids.alignmentFactor;
+		const fearFactor = Config.boids.fearFactor;
+		const separationDistance = Config.boids.separationDistance;
 
 		let cohesionVec = Vector.zero;
 		let separationVec = Vector.zero;

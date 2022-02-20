@@ -227,7 +227,7 @@ function resize () {
 
 function interpolateBoids (delta) {
 	boidSprites.forEach((_, index) => {
-		const amount = 18000 * delta; // 18,000 is magic. Idk why it works .
+		const amount = 18000 * delta; // 18,000 is magic. Idk why it works.
 		boidSprites[index].x += cachedBoidsData[index].dx * amount;
 		boidSprites[index].y += cachedBoidsData[index].dy * amount;
 		boidSprites[index].tint = 0x00ff00;
@@ -243,7 +243,7 @@ function setTickerCallback (callback) {
 } */
 
 app.ticker.add((delta) => {
-	interpolateBoids(delta);
+	// interpolateBoids(delta);
 
 	if (socket !== null && playerID !== -1) {
 		app.stage.on('mousemove', (event) => {
