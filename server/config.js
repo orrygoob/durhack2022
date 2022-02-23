@@ -8,7 +8,11 @@ const Config = {
 		separationFactor: 1.5,
 		alignmentFactor: 0.5,
 		fearFactor: 0.05,
+<<<<<<< Updated upstream
 		separationDistance: 0.03
+=======
+		separationDistance: 0.05
+>>>>>>> Stashed changes
 	},
 	game: {
 		playerTimeout: 1000
